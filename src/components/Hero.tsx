@@ -1,0 +1,72 @@
+import { ChevronDown } from 'lucide-react';
+import { HERO_BG_VIDEO, HERO_BG_IMAGE } from '../data';
+
+interface HeroProps {
+  onCheckAvailability: () => void;
+  onContactUs: () => void;
+}
+
+export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
+  return (
+    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+      {/* Background Video with Dark Hero Gradient overlay */}
+      <div className="absolute inset-0 z-0 select-none pointer-events-none">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover scale-105 transition-transform duration-[10s] ease-out"
+          poster={HERO_BG_IMAGE}
+        >
+          <source src={HERO_BG_VIDEO} type="video/mp4" />
+        </video>
+        {/* Soft, cinematic darkening gradient */}
+        <div className="absolute inset-0 hero-gradient bg-black/40" />
+      </div>
+
+      {/* Floating typography card content */}
+      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto text-white mt-12 md:mt-16">
+        <span className="inline-block font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#ffdada]/90 mb-4 md:mb-6">
+          Audio &amp; Video Guestbook
+        </span>
+        
+        <h1 className="font-serif text-4xl md:text-6xl font-semibold tracking-tight leading-[1.1] mb-6 drop-shadow-sm">
+          Every Voice, Forever Cherished
+        </h1>
+        
+        <p className="font-sans text-base md:text-lg text-white/85 max-w-2xl mx-auto leading-relaxed mb-10 font-light">
+          Capture every heartfelt message, every spontaneous laugh, and every whispered wish, preserving them as living memories to be revisited forever.
+        </p>
+
+        {/* Call to Actions */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
+          <button
+            onClick={onCheckAvailability}
+            className="w-full sm:w-auto px-10 py-4 md:py-5 bg-[#690018] hover:bg-[#8b1a2b] text-white font-sans text-xs font-medium uppercase tracking-[0.15em] transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer"
+          >
+            Check Availability
+          </button>
+          <button
+            onClick={onContactUs}
+            className="w-full sm:w-auto px-10 py-4 md:py-5 border border-white bg-white/5 hover:bg-white hover:text-[#690018] text-white font-sans text-xs font-medium uppercase tracking-[0.15em] transition-all duration-300 active:scale-[0.98] cursor-pointer"
+          >
+            Contact Us
+          </button>
+        </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <button
+        onClick={onCheckAvailability}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 text-white/70 hover:text-white transition-all animate-bounce-slow flex flex-col items-center gap-1 cursor-pointer"
+        aria-label="Scroll Down"
+      >
+        <span className="font-sans text-[9px] font-semibold tracking-[0.3em] uppercase opacity-70">
+          Discover
+        </span>
+        <ChevronDown className="w-5 h-5 md:w-6 md:h-6" />
+      </button>
+    </section>
+  );
+}

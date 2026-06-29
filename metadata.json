@@ -1,0 +1,6 @@
+{
+  "name": "Cherished Voices",
+  "description": "Premium wedding and event audio & video guestbook service",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

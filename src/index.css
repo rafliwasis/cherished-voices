@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, serif;
+  
+  --color-primary: #690018;
+  --color-primary-container: #8b1a2b;
+  --color-primary-fixed: #ffdada;
+  --color-surface-bg: #fcf9f8;
+  --color-surface-dim: #dcd9d9;
+  --color-surface-bright: #fcf9f8;
+  --color-surface-lowest: #ffffff;
+  --color-surface-low: #f6f3f2;
+  --color-surface-container: #f0eded;
+  --color-surface-high: #eae7e7;
+  --color-surface-highest: #e5e2e1;
+  --color-on-surface: #1c1b1b;
+  --color-on-surface-variant: #574141;
+  --color-outline: #8b7171;
+  --color-outline-variant: #debfbf;
+}
+
+/* Custom helper classes */
+.hero-gradient {
+  background: linear-gradient(to bottom, rgba(28, 27, 27, 0.25) 0%, rgba(28, 27, 27, 0.65) 100%);
+}
+
+@keyframes bounce-slow {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 3s infinite;
+}
+
+@keyframes drift-right {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(12px); }
+}
+
+.animate-drift {
+  animation: drift-right 8s ease-in-out infinite;
+}
+
+.delay-1 { animation-delay: 0s; }
+.delay-2 { animation-delay: 1.5s; }
+.delay-3 { animation-delay: 3.0s; }
+.delay-4 { animation-delay: 4.5s; }
+
+.modal-backdrop {
+  background-color: rgba(28, 27, 27, 0.4);
+  backdrop-filter: blur(8px);
+}
+
