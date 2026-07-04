@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-react';
-import { HERO_BG_VIDEO, HERO_BG_IMAGE } from '../data';
+import { HERO_BG_IMAGE } from '../data';
 
 interface HeroProps {
   onCheckAvailability: () => void;
@@ -19,7 +19,7 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
           className="w-full h-full object-cover scale-105 transition-transform duration-[10s] ease-out"
           poster={HERO_BG_IMAGE}
         >
-          <source src={HERO_BG_VIDEO} type="video/mp4" />
+          <source src="/hero-cherished.mp4" type="video/mp4" />
         </video>
         {/* Soft, cinematic darkening gradient */}
         <div className="absolute inset-0 hero-gradient bg-black/40" />
@@ -55,18 +55,6 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
           </button>
         </div>
       </div>
-
-      {/* Scroll Indicator */}
-      <button
-        onClick={onCheckAvailability}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 text-white/70 hover:text-white transition-all animate-bounce-slow flex flex-col items-center gap-1 cursor-pointer"
-        aria-label="Scroll Down"
-      >
-        <span className="font-sans text-[9px] font-semibold tracking-[0.3em] uppercase opacity-70">
-          Discover
-        </span>
-        <ChevronDown className="w-5 h-5 md:w-6 md:h-6" />
-      </button>
     </section>
   );
 }

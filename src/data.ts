@@ -9,39 +9,39 @@ export const ABOUT_VIDEO_PREVIEW = 'https://lh3.googleusercontent.com/aida-publi
 export const MOMENT_ITEMS: MomentItem[] = [
   {
     id: 'm1',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBdZDvxY461NGpVP7vmcLbkgR2BPdhjok31dC6yvxYrFbLS0kH9hedRqFB_-kojoi32kAAq2BlZA8aRuUN92qjk5l7WLl_EEaDaaiLJKGmeKQyGIWvC2X5AKvnhEJRwZntTJ--0E--pH0CxxVIpMqKA3klUZ3BCJvqUhiXzlPdjJkBqSvJr7p_ssriQ2Ysu-i3-Ij3B9KhSLrNpxGsU78mFYYKGGyUyj824JEohCzK-iXlraut6QoWoG0auTP9y1tENx4SqMeeZSrs3',
+    imageUrl: '/images/cv_1.jpg',
     caption: 'Leaving a voice message at the reception',
     aspect: '3/4'
   },
   {
     id: 'm2',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCBIXP10jTxUzG5--Ej3fQIY0HCFgRCrb7g1ad2KznQiw0ZraDWaZvppY3zHFRcwC0ZmAcj-z6F-hJ7WCwe3RgQ26XxryPbFjfkL-9IDDNKY0Hm86rsLF5-Scdl14qR0xk3ktah35epVAFuVMWyNWl7qRpZjqP4fZXmg-zcJsG82ZSbde54JzBYPwxaL3f05GRvumt-Qi6dApXgkWNV_nj2wf-MqNbdDfQbsNK_vcWv2poGl8OvAAKP1AB6im48hq3rk6CBYnk924Lg',
+    imageUrl: '/images/cv_2.jpg',
     caption: 'Laughter and stories forever recorded',
     aspect: 'square'
   },
   {
     id: 'm3',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBdmhQGC-e2Pxw6YVyFA5F5nDpagabAUqiTkxWTtFye15wvgtmvjive1N75ToGDfyn1VecKYmGrwgdLh1pcMsmuxTsxH9-jSU0Pw16IC7ECgYMQ6SksaULILrGw34PEqnHEw3qW7aDLnW9NBp3z7oY0_U9Me_S7jQwAm_lfFsIeQFbtGzpTubG1j1KDCPBBZfI3XrQDsi7urdvCIsJkVtARt8RVKvldYZffKIx7mhqdpwzKAzGEwHjAbtRlw9dWUoH61dcvJ1pVmBqt',
+    imageUrl: '/images/cv_3.jpg',
     caption: 'Vintage setup designed for luxury events',
-    aspect: 'square'
+    aspect: '4/5'
   },
   {
     id: 'm4',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBoHtANri4v2ajaefGEG3C8op2Zo8W-xr5g_bgupAhVRDaSCjBnSKMKJ29WhQ6TgYKQgSD0tRX7ptwLtzLNdeF-VsJFxSRVPEcSj4g_lNhrz3sbV0mSB0rhsdbQBsobZqBnF9h-sVkhY9JyuWqmZz7rKLxg6pzqlEOxcr99sgLDFpevLhKsCggWB6sQQEipkqrjQ-IYLLJ19SbziA6Ju_na_NHrhRX1f6bh6Jb27r9Rp63N-Y8BdQ0zApHQ3kwG7-NfuHSqn50QDRNP',
+    imageUrl: '/images/cv_4.jpg',
     caption: 'Picking up the receiver to record',
     aspect: '3/4'
   },
   {
     id: 'm5',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDiNXXlZtiFSIQga3Bw1JpE1W-FNmNmQ_9CN9zydSUN0e3EzKFhIqaqy-8DkeYAckjV8ErAKDMwjiKOWEkapTJOwMqhUo3SHJ0tNRDUhvi07XSx1sZqJp2fbqglnlzUtB4vpqHBPSJsMoi1wfIc4yiv2n_dwSVv1QXJO_z1z64HenpC2s5mVF3EirFIYg_K-APF_-E3wtqtMETiXdO-b_dJGcFWDHHWOzGPpyoCdIeBydCd2FaZvuBI7I47d3OzX4EyJ4SoEa0HleJB',
+    imageUrl: '/images/cv_5.jpg',
     caption: 'Gathering around the memory booth',
-    aspect: '4/5'
+    aspect: 'square'
   },
   {
     id: 'm6',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC6EqLgwSGssT1ErX3oUHp6CZUJ7UmCw1vaEsj3bgeI_hOmnY_PocViyr2cL2RX2m3VclQAUMHe4AXSUKC0SrzOGRibDYEjqFeTn1JH9F0LMr7M4gSBoG9wwjNKataXqeVzzTfcg2kjnpeDv5HxEWrd6XGr33Ry9Dfy22ZuGWVSeh1_sayfXX5KNPc2oy780sfAsx9F2AvVMVaTVc63XXI7MIA4Xqo3hXfAmOI2o24PW7-6c_aveQrqHZoTyurKCDWU9AGWpSB1mg1o',
+    imageUrl: '/images/cv_6.jpg',
     caption: 'Timeless decor for tablescapes',
-    aspect: 'square'
+    aspect: '4/5'
   }
 ];
 
@@ -80,6 +80,71 @@ export const TESTIMONIALS: Testimonial[] = [
 
 export const INITIAL_CALENDAR_EVENTS: CalendarEvent[] = [
   {
+    id: 'e0',
+    date: '2025-12-28',
+    title: "The Henderson's New Year Gala",
+    location: 'The Ritz-Carlton, New York',
+    type: 'past',
+    highlightsCount: 2,
+    recordings: [
+      {
+        id: 'r0-1',
+        guestName: 'Mr. Henderson',
+        message: 'What a night! Thank you all for coming to celebrate with us. Here is to a wonderful 2026!',
+        duration: '0:18',
+        timestamp: '11:45 PM'
+      },
+      {
+        id: 'r0-2',
+        guestName: 'Diana H.',
+        message: 'The best gala I have attended all year! The decorations, the music, everything was perfect.',
+        duration: '0:12',
+        timestamp: '10:30 PM'
+      }
+    ]
+  },
+  {
+    id: 'e0-2',
+    date: '2025-12-30',
+    title: 'Year-End Corporate Retreat',
+    location: 'The Glass House, New York',
+    type: 'past',
+    highlightsCount: 1,
+    recordings: [
+      {
+        id: 'r0-3',
+        guestName: 'Michael Chen',
+        message: 'Great team, great energy. Looking forward to an even bigger year ahead!',
+        duration: '0:15',
+        timestamp: '7:20 PM'
+      }
+    ]
+  },
+  {
+    id: 'e-before-1',
+    date: '2026-01-02',
+    title: "The Parkers' Wedding Reception",
+    location: 'Brooklyn Winery, New York',
+    type: 'past',
+    highlightsCount: 2,
+    recordings: [
+      {
+        id: 'rb1',
+        guestName: 'Maid of Honor — Jessica',
+        message: 'Emma and Tom, you two are the definition of soulmates. So much love for you both!',
+        duration: '0:22',
+        timestamp: '8:15 PM'
+      },
+      {
+        id: 'rb2',
+        guestName: 'Uncle Bob',
+        message: 'Finally my favorite niece is married! Tom, welcome to the family. Treat her right!',
+        duration: '0:14',
+        timestamp: '9:00 PM'
+      }
+    ]
+  },
+  {
     id: 'e1',
     date: '2026-01-04',
     title: 'The Sterling Wedding',
@@ -109,24 +174,7 @@ export const INITIAL_CALENDAR_EVENTS: CalendarEvent[] = [
     title: 'Silver Corporate Gala',
     location: 'Grand Hyatt Ballroom, New York',
     type: 'past',
-    highlightsCount: 0 // No video highlights yet
-  },
-  {
-    id: 'e2',
-    date: '2026-01-18',
-    title: 'Winter Gala 2026',
-    location: 'Manhattan Penthouse',
-    type: 'past',
-    highlightsCount: 1,
-    recordings: [
-      {
-        id: 'rg1',
-        guestName: 'CEO Catherine',
-        message: 'Welcome everyone to our 2026 Gala. This year has been monumental, and seeing all of your wonderful faces gathered in this room is the absolute highlight.',
-        duration: '0:35',
-        timestamp: '8:45 PM'
-      }
-    ]
+    highlightsCount: 0
   },
   {
     id: 'e3-1',
@@ -143,10 +191,52 @@ export const INITIAL_CALENDAR_EVENTS: CalendarEvent[] = [
     type: 'upcoming'
   },
   {
+    id: 'e2',
+    date: '2026-01-18',
+    title: 'Winter Gala 2026',
+    location: 'Manhattan Penthouse',
+    type: 'upcoming'
+  },
+  {
     id: 'e4',
     date: '2026-01-25',
     title: 'Upcoming Private Ceremony',
     location: 'The Ritz-Carlton, Boston',
+    type: 'upcoming'
+  },
+  {
+    id: 'e5-1',
+    date: '2026-01-28',
+    title: 'Morning Workshop Session',
+    location: 'Convention Center, Jakarta',
+    type: 'upcoming'
+  },
+  {
+    id: 'e5-2',
+    date: '2026-01-28',
+    title: 'Afternoon Seminar',
+    location: 'Convention Center, Jakarta',
+    type: 'upcoming'
+  },
+  {
+    id: 'e5-3',
+    date: '2026-01-28',
+    title: 'Evening Gala Dinner',
+    location: 'The Ritz-Carlton, Jakarta',
+    type: 'upcoming'
+  },
+  {
+    id: 'e5-4',
+    date: '2026-01-28',
+    title: 'Night Party',
+    location: 'Sky Lounge, Jakarta',
+    type: 'upcoming'
+  },
+  {
+    id: 'e5-5',
+    date: '2026-01-28',
+    title: 'VIP Afterparty',
+    location: 'Private Residence, Jakarta',
     type: 'upcoming'
   }
 ];

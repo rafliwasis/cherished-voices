@@ -39,19 +39,42 @@
   animation: bounce-slow 3s infinite;
 }
 
-@keyframes drift-right {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(12px); }
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-.animate-drift {
-  animation: drift-right 8s ease-in-out infinite;
+.animate-marquee {
+  animation: marquee 35s linear infinite;
+  will-change: transform;
 }
 
-.delay-1 { animation-delay: 0s; }
-.delay-2 { animation-delay: 1.5s; }
-.delay-3 { animation-delay: 3.0s; }
-.delay-4 { animation-delay: 4.5s; }
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Hide scrollbar for horizontal scroll strip */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.wedding-tone {
+  filter: brightness(1.04) contrast(0.92) saturate(1.15) sepia(0.12);
+}
+
+.wedding-tone-overlay {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: overlay;
+  background: linear-gradient(135deg, rgba(145, 42, 85, 0.12), rgba(180, 84, 128, 0.06));
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+}
 
 .modal-backdrop {
   background-color: rgba(28, 27, 27, 0.4);

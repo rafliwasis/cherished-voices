@@ -15,6 +15,8 @@ const MONTHS = [
   "July", "August", "September", "October", "November", "December"
 ];
 
+const TODAY_DATE = '2026-01-04';
+
 export default function CalendarSection({ 
   onOpenEventModal, 
   setSelectedDateForInquiry,
@@ -115,8 +117,10 @@ export default function CalendarSection({
               const dayEvents = getEventsForDay(day);
               const hasEvents = dayEvents.length > 0;
               
-              // Special visual style matching the HTML screenshot for Jan 4
-              const isFirstPastEvent = month === 0 && year === 2026 && day === 4;
+              const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+              const isToday = formattedDate === TODAY_DATE;
+              const visibleDots = dayEvents.slice(0, 3);
+              const overflowCount = dayEvents.length - 3;
 
               return (
                 <div
@@ -130,7 +134,7 @@ export default function CalendarSection({
                 >
                   <span 
                     className={`font-sans text-sm md:text-base font-medium flex items-center justify-center ${
-                      isFirstPastEvent
+                      isToday
                         ? 'w-10 h-10 bg-[#F4DCEA] rounded-full text-[#912A55] font-semibold'
                         : 'text-[#1c1b1b]'
                     }`}
@@ -138,21 +142,26 @@ export default function CalendarSection({
                     {day}
                   </span>
 
-                  {/* Indicator Dots matching event counts and types */}
+                  {/* Indicator Dots — max 3, show +N overflow */}
                   {hasEvents && (
-                    <div className="flex gap-0.5 justify-center mt-1">
-                      {dayEvents.map((evt, evtIdx) => (
+                    <div className="flex items-center gap-0.5 justify-center mt-1">
+                      {visibleDots.map((evt, evtIdx) => (
                         <span 
                           key={`${evt.id}-${evtIdx}`}
                           className={`text-[12px] font-bold leading-none ${
                             evt.type === 'past' 
-                              ? 'text-[#5e5e5d]' // Dark gray dot for past events
-                              : 'text-[#912A55]'  // Purple dot for upcoming events
+                              ? 'text-[#5e5e5d]'
+                              : 'text-[#912A55]'
                           }`}
                         >
                           ●
                         </span>
                       ))}
+                      {overflowCount > 0 && (
+                        <span className="text-[10px] font-sans font-semibold text-[#912A55] leading-none ml-0.5">
+                          +{overflowCount}
+                        </span>
+                      )}
                     </div>
                   )}
 
@@ -165,18 +174,6 @@ export default function CalendarSection({
                 </div>
               );
             })}
-          </div>
-        </div>
-
-        {/* Calendar Key / Legend */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-6 max-w-lg mx-auto font-sans text-xs text-[#5e5e5d]">
-          <div className="flex items-center gap-2">
-            <span className="text-[#5e5e5d] font-bold text-[12px] leading-none">●</span>
-            <span>Past Celebration (View Guestbook entries)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[#912A55] font-bold text-[12px] leading-none">●</span>
-            <span>Highly Requested Dates</span>
           </div>
         </div>
 
