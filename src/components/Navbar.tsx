@@ -30,7 +30,7 @@ export default function Navbar() {
       <nav
         className={`fixed top-0 w-full z-50 transition-all duration-500 ease-in-out border-b ${
           isScrolled
-            ? 'bg-[#FCF9F8]/90 backdrop-blur-md text-[#1C1B1B] border-[#e5e2e1]/40 shadow-sm py-4'
+            ? 'bg-[#FDFBFD]/92 backdrop-blur-md text-[#1C1820] border-[#E5DAE3]/40 shadow-sm py-4'
             : 'bg-transparent text-white border-white/10 py-6'
         }`}
       >
@@ -42,8 +42,8 @@ export default function Navbar() {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className={`font-serif text-2xl tracking-tight transition-colors duration-300 font-medium ${
-              isScrolled ? 'text-[#690018]' : 'text-white'
+            className={`font-[family-name:--font-script] text-3xl transition-colors duration-300 leading-none ${
+              isScrolled ? 'text-[#912A55]' : 'text-white'
             }`}
           >
             Cherished Voices
@@ -108,34 +108,34 @@ export default function Navbar() {
         }`}
       >
         <div className="flex justify-between items-center mb-12">
-          <span className="font-serif text-lg font-semibold text-[#690018]">Cherished Voices</span>
+          <span className="font-[family-name:--font-script] text-2xl text-[#912A55] leading-none">Cherished Voices</span>
           <button onClick={() => setIsMobileMenuOpen(false)} className="p-1">
             <X className="w-5 h-5 text-[#1C1B1B]" />
           </button>
         </div>
 
-        <div className="flex flex-col gap-6 font-sans text-xs font-semibold tracking-widest uppercase">
+        <div className="flex flex-col gap-6 font-serif text-sm tracking-wide">
           <button
             onClick={() => scrollToSection('about-us')}
-            className="text-left py-2 hover:text-[#690018] border-b border-[#e5e2e1]/40"
+            className="text-left py-2 hover:text-[#912A55] border-b border-[#E5DAE3]/40"
           >
             About Us
           </button>
           <button
             onClick={() => scrollToSection('moments')}
-            className="text-left py-2 hover:text-[#690018] border-b border-[#e5e2e1]/40"
+            className="text-left py-2 hover:text-[#912A55] border-b border-[#E5DAE3]/40"
           >
             Moments
           </button>
           <button
             onClick={() => scrollToSection('calendar')}
-            className="text-left py-2 hover:text-[#690018] border-b border-[#e5e2e1]/40"
+            className="text-left py-2 hover:text-[#912A55] border-b border-[#E5DAE3]/40"
           >
             Calendar
           </button>
           <button
             onClick={() => scrollToSection('contact')}
-            className="text-left py-2 hover:text-[#690018] border-b border-[#e5e2e1]/40"
+            className="text-left py-2 hover:text-[#912A55] border-b border-[#E5DAE3]/40"
           >
             Contact Us
           </button>
@@ -144,15 +144,15 @@ export default function Navbar() {
         {/* Footer info inside drawer */}
         <div className="absolute bottom-8 left-8 right-8 text-[#5e5e5d] text-xs space-y-4">
           <div className="flex items-center gap-2">
-            <Phone className="w-4 h-4 text-[#8b1a2b]" />
+            <Phone className="w-4 h-4 text-[#912A55]" />
             <span>089178875</span>
           </div>
           <div className="flex items-center gap-2">
-            <Instagram className="w-4 h-4 text-[#8b1a2b]" />
+            <Instagram className="w-4 h-4 text-[#912A55]" />
             <span>@cherishedvoices</span>
           </div>
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-[#8b1a2b]" />
+            <MapPin className="w-4 h-4 text-[#912A55]" />
             <span className="text-[10px]">South Tangerang, ID</span>
           </div>
         </div>

@@ -27,7 +27,7 @@ export default function Moments() {
               className={`relative group overflow-hidden ${aspectClass} bg-[#e5e2e1] cursor-pointer shadow-sm`}
             >
               {/* Fade overlay on hover */}
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col items-center justify-center z-10 gap-2">
+              <div className="absolute inset-0 bg-[#912A55]/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col items-center justify-center z-10 gap-2">
                 <Heart className="w-8 h-8 text-white fill-white animate-pulse" />
                 <span className="font-sans text-[10px] text-white uppercase tracking-[0.2em] font-medium">
                   View Story
@@ -52,13 +52,13 @@ export default function Moments() {
         
         {/* Title Block */}
         <div className="text-center mb-16 space-y-4">
-          <span className="font-sans text-xs font-semibold text-[#8b1a2b] uppercase tracking-[0.25em] block">
+          <span className="font-sans text-xs font-semibold text-[#912A55] uppercase tracking-[0.25em] block">
             Captured Memories
           </span>
-          <h2 className="font-serif text-4xl md:text-5xl font-semibold text-[#1C1B1B]">
+          <h2 className="font-serif text-4xl md:text-6xl font-light italic text-[#1C1B1B]">
             Moments
           </h2>
-          <div className="w-12 h-[1px] bg-[#690018] mx-auto mt-6" />
+          <div className="w-12 h-[1px] bg-[#912A55] mx-auto mt-6" />
         </div>
 
         {/* 3-Column Masonry Grid */}
@@ -76,13 +76,13 @@ export default function Moments() {
           onClick={() => setSelectedMoment(null)}
         >
           <div 
-            className="bg-[#FCF9F8] max-w-2xl w-full rounded-sm shadow-2xl overflow-hidden relative border border-[#debfbf]/40"
+            className="bg-[#F4DCEA]/90 max-w-2xl w-full rounded-2xl shadow-2xl overflow-hidden relative border border-[#D9BDD0]/40"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
             <button
               onClick={() => setSelectedMoment(null)}
-              className="absolute top-4 right-4 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full z-20 transition-all cursor-pointer"
+              className="absolute top-4 right-4 bg-[#912A55]/60 hover:bg-[#912A55]/80 text-white p-2 rounded-full z-20 transition-all cursor-pointer"
               aria-label="Close Preview"
             >
               <X className="w-5 h-5" />
@@ -98,13 +98,13 @@ export default function Moments() {
 
             {/* Caption details block */}
             <div className="p-6 md:p-8 space-y-3">
-              <span className="font-sans text-[10px] font-semibold text-[#8b1a2b] uppercase tracking-widest block">
+              <span className="font-sans text-[10px] font-semibold text-[#912A55] uppercase tracking-widest block">
                 Cherished Archive
               </span>
-              <h3 className="font-serif text-xl font-medium text-[#1c1b1b]">
+              <h3 className="font-serif text-2xl font-light italic text-[#1c1b1b]">
                 {selectedMoment.caption}
               </h3>
-              <p className="font-sans text-xs text-[#5e5e5d] leading-relaxed">
+              <p className="font-[family-name:--font-body] text-base text-[#5e5e5d] leading-relaxed">
                 A pristine, tangible record of the laughter, words of wisdom, and raw emotion shared at this premium celebration.
               </p>
             </div>

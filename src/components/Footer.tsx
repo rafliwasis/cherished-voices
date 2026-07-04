@@ -16,11 +16,11 @@ export default function Footer() {
           <a
             href="#"
             onClick={handleScrollToTop}
-            className="font-serif text-xl tracking-tight text-[#8B1A2B] hover:text-[#ff9a9e] transition-colors duration-300 font-semibold cursor-pointer block"
+            className="font-[family-name:--font-script] text-2xl text-[#912A55] hover:text-[#B05480] transition-colors duration-300 cursor-pointer block leading-none"
           >
             Cherished Voices
           </a>
-          <p className="font-sans text-[9px] text-white/35 uppercase tracking-[0.2em]">
+          <p className="font-[family-name:--font-body] text-[10px] text-white/35 italic tracking-wide">
             © 2026 Cherished Voices. All rights reserved.
           </p>
         </div>
@@ -30,7 +30,7 @@ export default function Footer() {
           
           {/* Location */}
           <div className="flex items-center gap-1.5 text-xs text-white/50">
-            <MapPin className="w-3.5 h-3.5 text-[#8B1A2B]" />
+            <MapPin className="w-3.5 h-3.5 text-[#912A55]" />
             <span className="font-sans">South Tangerang, ID</span>
           </div>
 
@@ -40,7 +40,7 @@ export default function Footer() {
               href="https://instagram.com/cherishedvoices"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 bg-white/5 hover:bg-[#8B1A2B] hover:text-white text-white/80 transition-all rounded-full"
+              className="p-2 bg-white/5 hover:bg-[#912A55] hover:text-white text-white/80 transition-all rounded-full"
               title="Instagram"
             >
               <Instagram className="w-4 h-4" />
@@ -50,7 +50,7 @@ export default function Footer() {
               href="https://wa.me/6281234567890"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 bg-white/5 hover:bg-[#8B1A2B] hover:text-white text-white/80 transition-all rounded-full"
+              className="p-2 bg-white/5 hover:bg-[#912A55] hover:text-white text-white/80 transition-all rounded-full"
               title="WhatsApp"
             >
               <MessageCircle className="w-4 h-4" />
