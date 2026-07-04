@@ -58,32 +58,32 @@ export default function CalendarSection({
         
         {/* Title block */}
         <div className="text-center mb-16 space-y-4">
-          <span className="font-sans text-xs font-semibold text-[#8b1a2b] uppercase tracking-[0.25em] block">
+          <span className="font-sans text-xs font-semibold text-[#912A55] uppercase tracking-[0.25em] block">
             Event Schedule
           </span>
-          <h2 className="font-serif text-4xl md:text-5xl font-semibold text-[#1C1B1B]">
+          <h2 className="font-serif text-4xl md:text-6xl font-light italic text-[#1C1B1B]">
             Calendar
           </h2>
-          <div className="w-12 h-[1px] bg-[#690018] mx-auto mt-6" />
+          <div className="w-12 h-[1px] bg-[#912A55] mx-auto mt-6" />
         </div>
 
         {/* Dynamic Month Selector */}
         <div className="flex items-center justify-center gap-8 mb-12 select-none">
           <button
             onClick={handlePrevMonth}
-            className="p-2 border border-[#debfbf]/40 hover:border-[#690018] hover:text-[#690018] text-[#5e5e5d] transition-all rounded-sm cursor-pointer"
+            className="p-2 border border-[#D9BDD0]/40 hover:border-[#912A55] hover:text-[#912A55] text-[#5e5e5d] transition-all rounded-sm cursor-pointer"
             aria-label="Previous Month"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           
-          <h3 className="font-serif text-2xl font-medium text-[#1C1B1B] min-w-[220px] text-center">
+          <h3 className="font-serif text-3xl font-light italic text-[#1C1B1B] min-w-[240px] text-center">
             {MONTHS[month]} {year}
           </h3>
 
           <button
             onClick={handleNextMonth}
-            className="p-2 border border-[#debfbf]/40 hover:border-[#690018] hover:text-[#690018] text-[#5e5e5d] transition-all rounded-sm cursor-pointer"
+            className="p-2 border border-[#D9BDD0]/40 hover:border-[#912A55] hover:text-[#912A55] text-[#5e5e5d] transition-all rounded-sm cursor-pointer"
             aria-label="Next Month"
           >
             <ChevronRight className="w-5 h-5" />
@@ -131,7 +131,7 @@ export default function CalendarSection({
                   <span 
                     className={`font-sans text-sm md:text-base font-medium flex items-center justify-center ${
                       isFirstPastEvent
-                        ? 'w-10 h-10 bg-[#ffdada] rounded-full text-[#690018] font-semibold'
+                        ? 'w-10 h-10 bg-[#F4DCEA] rounded-full text-[#912A55] font-semibold'
                         : 'text-[#1c1b1b]'
                     }`}
                   >
@@ -147,7 +147,7 @@ export default function CalendarSection({
                           className={`text-[12px] font-bold leading-none ${
                             evt.type === 'past' 
                               ? 'text-[#5e5e5d]' // Dark gray dot for past events
-                              : 'text-[#690018]'  // Red dot for upcoming events
+                              : 'text-[#912A55]'  // Purple dot for upcoming events
                           }`}
                         >
                           ●
@@ -175,7 +175,7 @@ export default function CalendarSection({
             <span>Past Celebration (View Guestbook entries)</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[#690018] font-bold text-[12px] leading-none">●</span>
+            <span className="text-[#912A55] font-bold text-[12px] leading-none">●</span>
             <span>Highly Requested Dates</span>
           </div>
         </div>

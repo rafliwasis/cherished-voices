@@ -20,13 +20,13 @@ export default function AboutUs() {
 
           {/* Right Block: Pitch & Details */}
           <div className="md:col-span-7 space-y-6">
-            <span className="font-sans text-xs font-semibold text-[#8b1a2b] uppercase tracking-[0.25em] block">
+            <span className="font-sans text-xs font-semibold text-[#912A55] uppercase tracking-[0.25em] block">
               ABOUT US
             </span>
-            <h2 className="font-serif text-3xl md:text-4xl font-medium text-[#1C1B1B] leading-tight">
+            <h2 className="font-serif text-3xl md:text-5xl font-light italic text-[#1C1B1B] leading-tight">
               What is Cherished Voices?
             </h2>
-            <p className="font-sans text-base md:text-lg text-[#574141] leading-relaxed font-light">
+            <p className="font-[family-name:--font-body] text-lg md:text-xl text-[#574141] leading-relaxed">
               Cherished Voices is a premium audio &amp; video guestbook service where guests record heartfelt voice and video messages for the celebrant, preserving memories forever. Available for weddings, gatherings, and birthday celebrations.
             </p>
           </div>

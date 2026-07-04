@@ -27,15 +27,15 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
 
       {/* Floating typography card content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto text-white mt-12 md:mt-16">
-        <span className="inline-block font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#ffdada]/90 mb-4 md:mb-6">
-          Audio &amp; Video Guestbook
+        <span className="inline-block font-[family-name:--font-body] text-sm italic text-[#F4DCEA]/90 mb-4 md:mb-6 tracking-wide">
+          Audio & Video Guestbook
         </span>
         
-        <h1 className="font-serif text-4xl md:text-6xl font-semibold tracking-tight leading-[1.1] mb-6 drop-shadow-sm">
+        <h1 className="font-serif text-5xl md:text-7xl font-light italic tracking-tight leading-[1.05] mb-6 drop-shadow-sm">
           Every Voice, Forever Cherished
         </h1>
         
-        <p className="font-sans text-base md:text-lg text-white/85 max-w-2xl mx-auto leading-relaxed mb-10 font-light">
+        <p className="font-[family-name:--font-body] text-lg md:text-xl text-white/85 max-w-2xl mx-auto leading-relaxed mb-10">
           Capture every heartfelt message, every spontaneous laugh, and every whispered wish, preserving them as living memories to be revisited forever.
         </p>
 
@@ -43,13 +43,13 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
           <button
             onClick={onCheckAvailability}
-            className="w-full sm:w-auto px-10 py-4 md:py-5 bg-[#690018] hover:bg-[#8b1a2b] text-white font-sans text-xs font-medium uppercase tracking-[0.15em] transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer"
+            className="w-full sm:w-auto px-10 py-4 md:py-5 bg-[#912A55] hover:bg-[#B05480] text-white font-sans text-xs font-medium uppercase tracking-[0.15em] transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer rounded-full"
           >
             Check Availability
           </button>
           <button
             onClick={onContactUs}
-            className="w-full sm:w-auto px-10 py-4 md:py-5 border border-white bg-white/5 hover:bg-white hover:text-[#690018] text-white font-sans text-xs font-medium uppercase tracking-[0.15em] transition-all duration-300 active:scale-[0.98] cursor-pointer"
+            className="w-full sm:w-auto px-10 py-4 md:py-5 border border-white/70 bg-white/10 hover:bg-white/20 text-white font-sans text-xs font-medium uppercase tracking-[0.15em] transition-all duration-300 active:scale-[0.98] cursor-pointer rounded-full"
           >
             Contact Us
           </button>
