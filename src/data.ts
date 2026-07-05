@@ -45,7 +45,7 @@ export const MOMENT_ITEMS: MomentItem[] = [
   }
 ];
 
-export const TESTIMONIALS: Testimonial[] = [
+export const TESTIMONIALS_ROW1: Testimonial[] = [
   {
     id: 't1',
     quote: 'Hearing my grandmother\'s laugh again was the best gift.',
@@ -77,6 +77,41 @@ export const TESTIMONIALS: Testimonial[] = [
     delayClass: 'delay-1'
   }
 ];
+
+export const TESTIMONIALS_ROW2: Testimonial[] = [
+  {
+    id: 't6',
+    quote: 'The setup was beautiful and matched our wedding theme perfectly.',
+    author: 'Emily & David',
+    delayClass: 'delay-1'
+  },
+  {
+    id: 't7',
+    quote: 'Our guests are still talking about it weeks later!',
+    author: 'Rachel W.',
+    delayClass: 'delay-2'
+  },
+  {
+    id: 't8',
+    quote: 'So much better than a traditional guestbook. We love listening to the messages.',
+    author: 'The Johnson Family',
+    delayClass: 'delay-3'
+  },
+  {
+    id: 't9',
+    quote: 'The quality exceeded our expectations. Highly recommend!',
+    author: 'Michael P.',
+    delayClass: 'delay-4'
+  },
+  {
+    id: 't10',
+    quote: 'A beautiful keepsake we will treasure forever.',
+    author: 'Sophie & Alex',
+    delayClass: 'delay-1'
+  }
+];
+
+export const TESTIMONIALS: Testimonial[] = [...TESTIMONIALS_ROW1, ...TESTIMONIALS_ROW2];
 
 export const INITIAL_CALENDAR_EVENTS: CalendarEvent[] = [
   {
