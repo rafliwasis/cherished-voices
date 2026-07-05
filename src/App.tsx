@@ -12,6 +12,7 @@ import { CalendarEvent } from './types';
 
 export default function App() {
   const [selectedEvents, setSelectedEvents] = useState<CalendarEvent[] | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedDateForInquiry, setSelectedDateForInquiry] = useState<string>('');
 
   const scrollToSection = (id: string) => {
@@ -22,10 +23,12 @@ export default function App() {
   };
 
   const handleOpenEventModal = (event: CalendarEvent, allEvents: CalendarEvent[]) => {
+    setSelectedDate(event.date);
     setSelectedEvents(allEvents);
   };
 
   const handleCloseEventModal = () => {
+    setSelectedDate('');
     setSelectedEvents(null);
   };
 
@@ -73,6 +76,7 @@ export default function App() {
       {/* Global Interactive Event Modal */}
       <EventModal 
         events={selectedEvents}
+        selectedDate={selectedDate}
         onClose={handleCloseEventModal}
         onSelectInquiryDate={handleSelectInquiryDate}
       />

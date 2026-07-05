@@ -141,17 +141,15 @@ export default function CalendarSection({
               
               const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
               const isToday = formattedDate === TODAY_DATE;
-              const visibleDots = dayEvents.slice(0, 3);
-              const overflowCount = dayEvents.length - 3;
+              const visibleDots = dayEvents.slice(0, 2);
+              const overflowCount = dayEvents.length - 2;
 
               return (
                 <div
                   key={`day-${day}`}
-                  onClick={() => hasEvents && onOpenEventModal(dayEvents[0], dayEvents)}
-                  className={`h-16 md:h-20 flex flex-col items-center justify-center relative transition-all rounded-sm ${
-                    hasEvents 
-                      ? 'cursor-pointer hover:bg-[#690018]/5 group' 
-                      : 'text-[#1c1b1b]'
+                  onClick={() => onOpenEventModal(dayEvents[0] || { id: 'empty', date: formattedDate, title: '', location: '', type: 'upcoming' } as CalendarEvent, dayEvents.length > 0 ? dayEvents : [])}
+                  className={`h-16 md:h-20 flex flex-col items-center justify-center relative transition-all rounded-sm cursor-pointer hover:bg-[#690018]/5 group ${
+                    hasEvents ? '' : 'text-[#1c1b1b]'
                   }`}
                 >
                   <span 
@@ -164,15 +162,14 @@ export default function CalendarSection({
                     {day}
                   </span>
 
-                  {/* Indicator Dots — max 3, show +N overflow */}
                   {hasEvents && (
-                    <div className="flex items-center gap-0.5 justify-center mt-1">
+                    <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 flex items-center gap-0.5 justify-center">
                       {visibleDots.map((evt, evtIdx) => (
                         <span 
                           key={`${evt.id}-${evtIdx}`}
-                          className={`text-[12px] font-bold leading-none ${
+                          className={`text-[10px] md:text-[12px] font-bold leading-none ${
                             evt.type === 'past' 
-                              ? 'text-[#5e5e5d]'
+                              ? 'text-[#c4b5b5]'
                               : 'text-[#912A55]'
                           }`}
                         >
@@ -180,17 +177,19 @@ export default function CalendarSection({
                         </span>
                       ))}
                       {overflowCount > 0 && (
-                        <span className="text-[10px] font-sans font-semibold text-[#912A55] leading-none ml-0.5">
+                        <span className="text-[9px] md:text-[10px] font-sans font-semibold text-[#912A55] leading-none ml-0.5">
                           +{overflowCount}
                         </span>
                       )}
                     </div>
                   )}
 
-                  {/* Tooltip on hover */}
                   {hasEvents && (
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-20 bg-[#303232] text-white text-[10px] py-1 px-2 uppercase tracking-wider whitespace-nowrap rounded shadow-md pointer-events-none">
-                      {dayEvents[0].type === 'past' ? 'View Memories' : 'Inquire Date'}
+                      {dayEvents[0].type === 'past' 
+                        ? `View ${dayEvents.length} Past ${dayEvents.length === 1 ? 'Event' : 'Events'}`
+                        : `${dayEvents.length} Upcoming ${dayEvents.length === 1 ? 'Event' : 'Events'}`
+                      }
                     </div>
                   )}
                 </div>
