@@ -15,15 +15,17 @@ const MONTHS = [
   "July", "August", "September", "October", "November", "December"
 ];
 
-const TODAY_DATE = '2026-01-04';
+const getTodayString = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
 
 export default function CalendarSection({ 
   onOpenEventModal, 
   setSelectedDateForInquiry,
   onScrollToContact 
 }: CalendarSectionProps) {
-  // Start calendar state at January 2026
-  const [currentDate, setCurrentDate] = useState<Date>(new Date(2026, 0, 1));
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
 
   useEffect(() => {
@@ -140,7 +142,7 @@ export default function CalendarSection({
               const hasEvents = dayEvents.length > 0;
               
               const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-              const isToday = formattedDate === TODAY_DATE;
+              const isToday = formattedDate === getTodayString();
               const visibleDots = dayEvents.slice(0, 2);
               const overflowCount = dayEvents.length - 2;
 
