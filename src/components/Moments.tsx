@@ -1,10 +1,39 @@
-import { useState } from 'react';
-import { Heart, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Heart, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MOMENT_ITEMS } from '../data';
 import { MomentItem } from '../types';
 
 export default function Moments() {
-  const [selectedMoment, setSelectedMoment] = useState<MomentItem | null>(null);
+  const [selectedMomentIndex, setSelectedMomentIndex] = useState<number | null>(null);
+
+  const selectedMoment = selectedMomentIndex !== null ? MOMENT_ITEMS[selectedMomentIndex] : null;
+
+  const handlePrev = () => {
+    if (selectedMomentIndex === null) return;
+    setSelectedMomentIndex((selectedMomentIndex - 1 + MOMENT_ITEMS.length) % MOMENT_ITEMS.length);
+  };
+
+  const handleNext = () => {
+    if (selectedMomentIndex === null) return;
+    setSelectedMomentIndex((selectedMomentIndex + 1) % MOMENT_ITEMS.length);
+  };
+
+  useEffect(() => {
+    if (selectedMomentIndex === null) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        handlePrev();
+      } else if (e.key === 'ArrowRight') {
+        handleNext();
+      } else if (e.key === 'Escape') {
+        setSelectedMomentIndex(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedMomentIndex]);
 
   return (
     <section className="py-24 md:py-32 bg-white" id="moments">
@@ -34,7 +63,7 @@ export default function Moments() {
             return (
               <div
                 key={item.id}
-                onClick={() => setSelectedMoment(item)}
+                onClick={() => setSelectedMomentIndex(idx)}
                 className={`relative group overflow-hidden ${aspectClass} bg-[#e5e2e1] cursor-pointer shadow-md flex-shrink-0 w-[70vw] snap-start rounded-lg`}
                 style={{ width: widths[idx] }}
               >
@@ -60,25 +89,47 @@ export default function Moments() {
         </div>
       </div>
 
-      {/* Lightbox Modal */}
       {selectedMoment && (
         <div 
           className="fixed inset-0 z-[100] modal-backdrop flex items-center justify-center p-4"
-          onClick={() => setSelectedMoment(null)}
+          onClick={() => setSelectedMomentIndex(null)}
         >
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePrev();
+            }}
+            className="fixed left-8 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-[#912A55] p-3 rounded-full z-[110] transition-all duration-300 hover:scale-110 shadow-xl cursor-pointer backdrop-blur-sm"
+            aria-label="Previous Moment"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNext();
+            }}
+            className="fixed right-8 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-[#912A55] p-3 rounded-full z-[110] transition-all duration-300 hover:scale-110 shadow-xl cursor-pointer backdrop-blur-sm"
+            aria-label="Next Moment"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+
           <div 
-            className="bg-[#F4DCEA]/90 max-w-2xl w-full rounded-2xl shadow-2xl overflow-hidden relative border border-[#D9BDD0]/40"
+            key={selectedMomentIndex}
+            className="bg-[#F4DCEA]/90 max-w-2xl w-full rounded-2xl shadow-2xl overflow-hidden relative border border-[#D9BDD0]/40 animate-[fadeIn_0.4s_ease-out]"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              onClick={() => setSelectedMoment(null)}
+              onClick={() => setSelectedMomentIndex(null)}
               className="absolute top-4 right-4 bg-[#912A55]/60 hover:bg-[#912A55]/80 text-white p-2 rounded-full z-20 transition-all cursor-pointer"
               aria-label="Close Preview"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="aspect-[4/3] w-full overflow-hidden bg-black relative">
+            <div className="aspect-[4/3] w-full overflow-hidden bg-black relative animate-[slideIn_0.4s_cubic-bezier(0.4,0,0.2,1)]">
               <div
                 className="w-full h-full bg-contain bg-no-repeat bg-center"
                 style={{ backgroundImage: `url(${selectedMoment.imageUrl})` }}

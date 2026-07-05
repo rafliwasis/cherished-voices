@@ -1,20 +1,30 @@
 import { X, MapPin, Camera, Play, Sparkles } from 'lucide-react';
 import { CalendarEvent } from '../types';
 
+const WHATSAPP_NUMBER = '6281234567890';
+const WHATSAPP_MESSAGE = 'Hi Cherished Voices, I would like to inquire about booking for';
+const TODAY_DATE = '2026-01-04';
+
 interface EventModalProps {
   events: CalendarEvent[] | null;
+  selectedDate: string;
   onClose: () => void;
   onSelectInquiryDate: (dateString: string) => void;
 }
 
-export default function EventModal({ events, onClose }: EventModalProps) {
-  if (!events || events.length === 0) return null;
+export default function EventModal({ events, selectedDate, onClose }: EventModalProps) {
+  if (!events || !selectedDate) return null;
 
-  const firstEvent = events[0];
-  const isPast = firstEvent.type === 'past';
+  const hasEvents = events.length > 0;
+  const firstEvent = hasEvents ? events[0] : null;
+  const isPast = firstEvent ? firstEvent.type === 'past' : false;
+  const dateStr = selectedDate;
+  
+  const isFuture = dateStr > TODAY_DATE;
+  const shouldShowWhatsAppCTA = isFuture && !isPast;
 
-  // Format date helper
   const formatDateString = (dateStr: string) => {
+    if (!dateStr) return '';
     const d = new Date(dateStr);
     return d.toLocaleDateString('en-US', {
       weekday: 'long',
@@ -37,19 +47,54 @@ export default function EventModal({ events, onClose }: EventModalProps) {
           <X className="w-4 h-4" />
         </button>
 
-        {/* Modal Header */}
         <div className="p-6 md:p-8 bg-white border-b border-[#debfbf]/20 flex-shrink-0">
           <span className="font-sans text-[10px] font-semibold text-[#8b1a2b] uppercase tracking-[0.25em] mb-1.5 block">
-            {isPast ? 'Celebration Archives' : 'Date Schedule'}
+            Date Schedule
           </span>
           <h3 className="font-serif text-xl md:text-2xl font-semibold text-[#1c1b1b]">
-            {formatDateString(firstEvent.date)}
+            {formatDateString(dateStr)}
           </h3>
         </div>
 
-        {/* Modal Body */}
         <div className="p-6 md:p-8 overflow-y-auto flex-1">
-          {isPast ? (
+          {!hasEvents ? (
+            shouldShowWhatsAppCTA ? (
+              <div className="text-center py-8 space-y-6 max-w-md mx-auto">
+                <div className="w-12 h-12 bg-[#ffdada] text-[#690018] rounded-full flex items-center justify-center mx-auto">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                
+                <div className="space-y-3">
+                  <p className="font-sans text-xs md:text-sm text-[#5e5e5d] leading-relaxed">
+                    This date may still be available for booking. Contact us to confirm availability or discuss your event.
+                  </p>
+                </div>
+
+                <a
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`${WHATSAPP_MESSAGE} ${formatDateString(dateStr)}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#912A55] text-white hover:bg-[#B05480] font-sans text-xs font-semibold uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] rounded-full cursor-pointer"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                  </svg>
+                  Connect via WhatsApp
+                </a>
+              </div>
+            ) : (
+              <div className="text-center py-8 space-y-6 max-w-md mx-auto">
+                <div className="w-12 h-12 bg-[#e5e2e1] text-[#5e5e5d] rounded-full flex items-center justify-center mx-auto">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div className="space-y-3">
+                  <p className="font-sans text-xs md:text-sm text-[#5e5e5d] leading-relaxed">
+                    This date has passed and no events were recorded.
+                  </p>
+                </div>
+              </div>
+            )
+          ) : isPast ? (
             /* PAST EVENTS VIEW: Lists cards vertically stacked downwards */
             <div className="flex flex-col gap-6">
               {events.map((evt) => {
@@ -100,7 +145,6 @@ export default function EventModal({ events, onClose }: EventModalProps) {
               })}
             </div>
           ) : (
-            /* UPCOMING EVENTS VIEW: Minimal modal, NO CTA button */
             <div className="text-center py-8 space-y-6 max-w-md mx-auto">
               <div className="w-12 h-12 bg-[#ffdada] text-[#690018] rounded-full flex items-center justify-center mx-auto">
                 <Sparkles className="w-5 h-5" />
@@ -108,12 +152,26 @@ export default function EventModal({ events, onClose }: EventModalProps) {
               
               <div className="space-y-3">
                 <h4 className="font-serif text-lg md:text-xl font-semibold text-[#1c1b1b]">
-                  There are {events.length} {events.length === 1 ? 'event' : 'events'} on this date
+                  There {events.length === 1 ? 'is' : 'are'} {events.length} {events.length === 1 ? 'event' : 'events'} on this date
                 </h4>
                 <p className="font-sans text-xs md:text-sm text-[#5e5e5d] leading-relaxed">
-                  Want to know more or book this date? Reach out to us directly.
+                  This date may still be available for booking. Contact us to confirm availability or discuss your event.
                 </p>
               </div>
+
+              {shouldShowWhatsAppCTA && (
+                <a
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`${WHATSAPP_MESSAGE} ${formatDateString(dateStr)}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#912A55] text-white hover:bg-[#B05480] font-sans text-xs font-semibold uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] rounded-full cursor-pointer"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                  </svg>
+                  Connect via WhatsApp
+                </a>
+              )}
             </div>
           )}
         </div>

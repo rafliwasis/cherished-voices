@@ -238,5 +238,12 @@ export const INITIAL_CALENDAR_EVENTS: CalendarEvent[] = [
     title: 'VIP Afterparty',
     location: 'Private Residence, Jakarta',
     type: 'upcoming'
+  },
+  {
+    id: 'e6-1',
+    date: '2026-01-29',
+    title: 'Corporate Summit',
+    location: 'Grand Ballroom, Jakarta',
+    type: 'upcoming'
   }
 ];
