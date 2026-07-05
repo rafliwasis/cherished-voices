@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Info } from 'lucide-react';
-import { INITIAL_CALENDAR_EVENTS } from '../data';
+import { supabase } from '../lib/supabase';
 import { CalendarEvent } from '../types';
 
 interface CalendarSectionProps {
@@ -24,7 +24,29 @@ export default function CalendarSection({
 }: CalendarSectionProps) {
   // Start calendar state at January 2026
   const [currentDate, setCurrentDate] = useState<Date>(new Date(2026, 0, 1));
-  const [events, setEvents] = useState<CalendarEvent[]>(INITIAL_CALENDAR_EVENTS);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from('calendar_events')
+      .select('id, date, title, location, type, highlights_count')
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('Failed to load calendar events', error);
+          return;
+        }
+        setEvents(
+          (data ?? []).map((row) => ({
+            id: row.id,
+            date: row.date,
+            title: row.title,
+            location: row.location ?? '',
+            type: row.type as CalendarEvent['type'],
+            highlightsCount: row.highlights_count,
+          }))
+        );
+      });
+  }, []);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
