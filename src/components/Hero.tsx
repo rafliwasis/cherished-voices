@@ -1,4 +1,5 @@
-import { ChevronDown } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { fetchOverrides } from '../lib/data-store';
 import { HERO_BG_IMAGE } from '../data';
 
 interface HeroProps {
@@ -7,19 +8,34 @@ interface HeroProps {
 }
 
 export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
+  const [heroBg, setHeroBg] = useState<string>(HERO_BG_IMAGE);
+  const [heroVideo, setHeroVideo] = useState<string>('/hero-cherished.mp4');
+  const [heroCaption, setHeroCaption] = useState<string>('Audio & Video Guestbook');
+
+  useEffect(() => {
+    fetchOverrides().then(overrides => {
+      if (overrides.hero) {
+        if (overrides.hero.imageUrl) setHeroBg(overrides.hero.imageUrl);
+        if (overrides.hero.videoUrl) setHeroVideo(overrides.hero.videoUrl);
+        if (overrides.hero.caption) setHeroCaption(overrides.hero.caption);
+      }
+    });
+  }, []);
+
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       {/* Background Video with Dark Hero Gradient overlay */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
         <video
+          key={heroVideo}
           autoPlay
           loop
           muted
           playsInline
           className="w-full h-full object-cover scale-105 transition-transform duration-[10s] ease-out"
-          poster={HERO_BG_IMAGE}
+          poster={heroBg}
         >
-          <source src="/hero-cherished.mp4" type="video/mp4" />
+          <source src={heroVideo} type="video/mp4" />
         </video>
         {/* Soft, cinematic darkening gradient */}
         <div className="absolute inset-0 hero-gradient bg-black/40" />
@@ -28,7 +44,7 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
       {/* Floating typography card content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto text-white mt-12 md:mt-16">
         <span className="inline-block font-[family-name:--font-body] text-sm italic text-[#F4DCEA]/90 mb-4 md:mb-6 tracking-wide">
-          Audio & Video Guestbook
+          {heroCaption}
         </span>
         
         <h1 className="font-serif text-5xl md:text-7xl font-light italic tracking-tight leading-[1.05] mb-6 drop-shadow-sm">
