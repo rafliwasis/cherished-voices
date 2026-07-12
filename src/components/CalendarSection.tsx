@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Info } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 import { CalendarEvent } from '../types';
 
 interface CalendarSectionProps {
@@ -29,24 +28,21 @@ export default function CalendarSection({
   const [events, setEvents] = useState<CalendarEvent[]>([]);
 
   useEffect(() => {
-    supabase
-      .from('calendar_events')
-      .select('id, date, title, location, type, highlights_count')
-      .then(({ data, error }) => {
-        if (error) {
-          console.error('Failed to load calendar events', error);
-          return;
-        }
+    fetch('/api/events')
+      .then((res) => res.json())
+      .then((data: Array<{ id: string; date: string; title: string; location: string; type: CalendarEvent['type'] }>) => {
         setEvents(
-          (data ?? []).map((row) => ({
+          data.map((row) => ({
             id: row.id,
             date: row.date,
             title: row.title,
-            location: row.location ?? '',
-            type: row.type as CalendarEvent['type'],
-            highlightsCount: row.highlights_count,
+            location: row.location,
+            type: row.type,
           }))
         );
+      })
+      .catch((err) => {
+        console.error('Failed to load calendar events', err);
       });
   }, []);
 
