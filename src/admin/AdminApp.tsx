@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Routes, Route, NavLink } from 'react-router-dom';
 import HeroAdmin from './sections/HeroAdmin';
 import MomentsAdmin from './sections/MomentsAdmin';
+import { supabase } from '../lib/supabase';
 import { Image, LayoutTemplate, LogOut, ExternalLink, Menu, X } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -15,15 +16,24 @@ const NAV_ITEMS = [
     const [sidebarOpen, setSidebarOpen] = useState(false);
   
     useEffect(() => {
-      const isAuth = localStorage.getItem('admin_auth') === 'true';
-      if (!isAuth) {
-        navigate('/admin/login');
-      }
-      setAuthLoading(false);
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!session) {
+          navigate('/admin/login');
+        }
+        setAuthLoading(false);
+      });
+
+      const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (!session) {
+          navigate('/admin/login');
+        }
+      });
+
+      return () => subscription.subscription.unsubscribe();
     }, [navigate]);
-  
-    const handleLogout = () => {
-      localStorage.removeItem('admin_auth');
+
+    const handleLogout = async () => {
+      await supabase.auth.signOut();
       navigate('/admin/login');
     };
 

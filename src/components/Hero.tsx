@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchOverrides } from '../lib/data-store';
+import { getHero } from '../lib/cms';
 import { HERO_BG_IMAGE } from '../data';
 
 interface HeroProps {
@@ -13,11 +13,11 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
   const [heroCaption, setHeroCaption] = useState<string>('Audio & Video Guestbook');
 
   useEffect(() => {
-    fetchOverrides().then(overrides => {
-      if (overrides.hero) {
-        if (overrides.hero.imageUrl) setHeroBg(overrides.hero.imageUrl);
-        if (overrides.hero.videoUrl) setHeroVideo(overrides.hero.videoUrl);
-        if (overrides.hero.caption) setHeroCaption(overrides.hero.caption);
+    getHero().then((hero) => {
+      if (hero) {
+        if (hero.imageUrl) setHeroBg(hero.imageUrl);
+        if (hero.videoUrl) setHeroVideo(hero.videoUrl);
+        if (hero.caption) setHeroCaption(hero.caption);
       }
     });
   }, []);

@@ -1,19 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { fetchOverrides, saveOverrides } from '../../lib/data-store';
-import { MOMENT_ITEMS } from '../../data';
+import { getMoments, saveMoment, deleteMoment, uploadMedia, type MomentRow } from '../../lib/cms';
 import { MomentItem } from '../../types';
 import { Pencil, Check, X, RefreshCw, Save, Image as ImageIcon } from 'lucide-react';
-
-interface MomentMeta {
-  id: string;
-  staticId: string;
-  imageUrl: string;
-  caption: string;
-  description: string;
-  aspect: MomentItem['aspect'];
-  sort_order: number;
-  fromDb: boolean;
-}
 
 // ── Local Image Uploader ──
 function ImageUploader({ currentUrl, onUploaded }: { currentUrl: string; onUploaded: (url: string) => void }) {
@@ -27,25 +15,11 @@ function ImageUploader({ currentUrl, onUploaded }: { currentUrl: string; onUploa
     setError('');
     setUploading(true);
     const ext = file.name.split('.').pop();
-    const filename = `images/custom_${Date.now()}.${ext}`;
-    
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
     try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        headers: {
-          'x-filename': filename,
-          'Content-Type': file.type,
-        },
-        body: file,
-      });
-      
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || 'Upload failed');
-      }
-      
-      const data = await response.json();
-      onUploaded(data.url);
+      const url = await uploadMedia('moments', path, file);
+      onUploaded(url);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -87,9 +61,8 @@ function ImageUploader({ currentUrl, onUploaded }: { currentUrl: string; onUploa
   );
 }
 
-
 export default function MomentsAdmin() {
-  const [moments, setMoments] = useState<MomentMeta[]>([]);
+  const [moments, setMoments] = useState<MomentRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [savedId, setSavedId] = useState<string | null>(null);
@@ -100,66 +73,18 @@ export default function MomentsAdmin() {
   const [editAspect, setEditAspect] = useState<MomentItem['aspect']>('square');
   const [error, setError] = useState('');
 
-  const mergeWithDb = (dbRows: Record<string, any>) => {
-    const base = MOMENT_ITEMS.map((item, idx) => {
-      const db = dbRows[item.id];
-      return {
-        id: db?.db_id ?? item.id,
-        staticId: item.id,
-        imageUrl: db?.image_url ?? item.imageUrl,
-        caption: db?.caption ?? item.caption,
-        description: db?.description ?? item.description ?? '',
-        aspect: db?.aspect ?? item.aspect,
-        sort_order: idx,
-        fromDb: !!db,
-        isCustom: false,
-      };
-    });
-
-    const existingIds = new Set(MOMENT_ITEMS.map(i => i.id));
-    const custom = Object.entries(dbRows)
-      .filter(([id]) => !existingIds.has(id))
-      .map(([id, data], idx) => ({
-        id,
-        staticId: id,
-        imageUrl: data.image_url,
-        caption: data.caption,
-        description: data.description,
-        aspect: data.aspect ?? 'square',
-        sort_order: base.length + idx,
-        fromDb: true,
-        isCustom: true,
-      }));
-
-    return [...base, ...custom];
-  };
-
-  const fetchFromDb = async () => {
+  const fetchMoments = async () => {
     setLoading(true);
-    const overrides = await fetchOverrides();
-    const momentsObj = overrides.moments || {};
-
-    const dbMap: Record<string, any> = {};
-    Object.entries(momentsObj).forEach(([id, data]) => {
-      dbMap[id] = {
-        db_id: id,
-        image_url: data.imageUrl,
-        caption: data.caption,
-        description: data.description,
-        aspect: data.aspect,
-      };
-    });
-    
-    setMoments(mergeWithDb(dbMap));
+    setMoments(await getMoments());
     setLoading(false);
   };
 
-  useEffect(() => { fetchFromDb(); }, []);
+  useEffect(() => { fetchMoments(); }, []);
 
-  const startEdit = (m: MomentMeta) => {
-    setEditingId(m.staticId);
+  const startEdit = (m: MomentRow) => {
+    setEditingId(m.id);
     setEditCaption(m.caption);
-    setEditDescription(m.description);
+    setEditDescription(m.description || '');
     setEditImageUrl(m.imageUrl);
     setEditAspect(m.aspect);
     setError('');
@@ -173,64 +98,46 @@ export default function MomentsAdmin() {
     setError('');
   };
 
-  const handleSave = async (m: MomentMeta) => {
+  const handleSave = async (m: MomentRow) => {
     if (!editCaption.trim()) { setError('Title is required.'); return; }
     setError('');
-    setSavingId(m.staticId);
+    setSavingId(m.id);
 
     try {
-      const overrides = await fetchOverrides();
-      if (!overrides.moments) overrides.moments = {};
-      
-      const isNew = m.staticId.startsWith('new_');
-      const finalId = isNew ? `custom_${Date.now()}` : m.staticId;
-      
-      overrides.moments[finalId] = {
+      const isNew = m.id.startsWith('new_');
+      await saveMoment({
+        id: isNew ? undefined : m.id,
         imageUrl: editImageUrl,
         caption: editCaption.trim(),
         description: editDescription.trim(),
-        aspect: editAspect
-      };
-      
-      await saveOverrides(overrides);
-      
-      if (isNew) {
-        fetchFromDb(); // Re-fetch to merge properly
-        cancelEdit();
-        return;
-      }
+        aspect: editAspect,
+        sortOrder: m.sortOrder,
+      });
 
-      setMoments((prev) =>
-        prev.map((item) =>
-          item.staticId === m.staticId
-            ? { ...item, caption: editCaption.trim(), description: editDescription.trim(), imageUrl: editImageUrl, aspect: editAspect, fromDb: true }
-            : item
-        )
-      );
-      
+      await fetchMoments();
       setSavingId(null);
-      setSavedId(m.staticId);
-      setTimeout(() => setSavedId(null), 2000);
+      if (!isNew) {
+        setSavedId(m.id);
+        setTimeout(() => setSavedId(null), 2000);
+      }
       cancelEdit();
     } catch (err: any) {
       setError(err.message);
+      setSavingId(null);
     }
   };
 
   const handleAddNew = () => {
     const newId = `new_${Date.now()}`;
-    setMoments(prev => [{
+    setMoments((prev) => [{
       id: newId,
-      staticId: newId,
       imageUrl: '/images/cv_placeholder.jpg',
       caption: '',
       description: '',
       aspect: 'square',
-      sort_order: 0,
-      fromDb: false,
-      isCustom: true
+      sortOrder: prev.length,
     }, ...prev]);
-    
+
     setEditingId(newId);
     setEditCaption('');
     setEditDescription('');
@@ -239,16 +146,12 @@ export default function MomentsAdmin() {
     setError('');
   };
 
-  const handleDelete = async (staticId: string) => {
-    if (!confirm('Are you sure you want to delete this custom moment?')) return;
-    
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this moment?')) return;
+
     try {
-      const overrides = await fetchOverrides();
-      if (overrides.moments && overrides.moments[staticId]) {
-        delete overrides.moments[staticId];
-        await saveOverrides(overrides);
-        fetchFromDb();
-      }
+      await deleteMoment(id);
+      await fetchMoments();
     } catch (err: any) {
       setError(err.message);
     }
@@ -270,15 +173,14 @@ export default function MomentsAdmin() {
         <div>
           <h2 className="font-serif text-3xl font-light italic text-[#1C1B1B]">Moments Gallery</h2>
           <p className="font-sans text-sm text-[#5e5e5d] mt-1">
-            Edit the title, description, and image shown on each moment card. Images are uploaded directly to the local{' '}
-            <code className="text-[10px] bg-[#F4DCEA] text-[#912A55] px-1.5 py-0.5 rounded">public/images/</code> folder.
+            Edit the title, description, and image shown on each moment card.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={handleAddNew} className="flex items-center gap-1.5 px-4 py-2 bg-[#912A55] hover:bg-[#B05480] text-white font-sans text-xs font-medium uppercase tracking-widest rounded-full transition-colors cursor-pointer shadow-sm">
             + Add New
           </button>
-          <button onClick={fetchFromDb} disabled={loading} className="p-2 text-[#5e5e5d] hover:text-[#912A55] transition-colors cursor-pointer">
+          <button onClick={fetchMoments} disabled={loading} className="p-2 text-[#5e5e5d] hover:text-[#912A55] transition-colors cursor-pointer">
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>
@@ -299,26 +201,21 @@ export default function MomentsAdmin() {
       ) : (
         <div className="space-y-4">
           {moments.map((m) => {
-            const isEditing = editingId === m.staticId;
-            const isSaving = savingId === m.staticId;
-            const isSaved = savedId === m.staticId;
+            const isEditing = editingId === m.id;
+            const isSaving = savingId === m.id;
+            const isSaved = savedId === m.id;
+            const isNew = m.id.startsWith('new_');
             const currentImg = isEditing ? editImageUrl : m.imageUrl;
 
             return (
-              <div key={m.staticId} className={`bg-white border rounded-2xl overflow-hidden shadow-sm transition-all duration-200 ${isEditing ? 'border-[#912A55]/30 shadow-md' : 'border-[#D9BDD0]/30'}`}>
+              <div key={m.id} className={`bg-white border rounded-2xl overflow-hidden shadow-sm transition-all duration-200 ${isEditing ? 'border-[#912A55]/30 shadow-md' : 'border-[#D9BDD0]/30'}`}>
                 <div className="flex gap-0">
                   {/* Image thumbnail */}
                   <div className={`relative flex-shrink-0 w-32 md:w-48 ${aspectClass(m.aspect)} bg-[#e5e2e1]`}>
                     <img src={currentImg} alt={m.caption} className="absolute inset-0 w-full h-full object-cover" />
-                    
+
                     {isEditing && (
                       <ImageUploader currentUrl={editImageUrl} onUploaded={setEditImageUrl} />
-                    )}
-
-                    {!isEditing && (
-                      <div className={`absolute top-2 left-2 rounded-full px-2 py-0.5 text-[9px] font-sans font-semibold uppercase tracking-wider ${(m as any).isCustom ? 'bg-[#912A55] text-white' : m.fromDb ? 'bg-[#1C1B1B] text-white' : 'bg-black/40 text-white/80'}`}>
-                        {(m as any).isCustom ? 'Custom' : m.fromDb ? 'Modified' : 'Static'}
-                      </div>
                     )}
                   </div>
 
@@ -370,8 +267,8 @@ export default function MomentsAdmin() {
                           <button onClick={cancelEdit} className="flex items-center gap-1.5 px-4 py-2 border border-[#D9BDD0]/50 text-[#5e5e5d] hover:text-[#912A55] font-sans text-xs font-medium uppercase tracking-widest rounded-full cursor-pointer">
                             <X className="w-3.5 h-3.5" /> Cancel
                           </button>
-                          {(m as any).isCustom && !m.staticId.startsWith('new_') && (
-                            <button onClick={() => handleDelete(m.staticId)} className="ml-auto text-red-500 hover:text-red-600 font-sans text-[10px] uppercase tracking-widest font-semibold px-2">
+                          {!isNew && (
+                            <button onClick={() => handleDelete(m.id)} className="ml-auto text-red-500 hover:text-red-600 font-sans text-[10px] uppercase tracking-widest font-semibold px-2">
                               Delete
                             </button>
                           )}

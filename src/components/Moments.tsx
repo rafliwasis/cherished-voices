@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Heart, X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { fetchOverrides } from '../lib/data-store';
+import { getMoments } from '../lib/cms';
 import { MOMENT_ITEMS } from '../data';
 import { MomentItem } from '../types';
 
@@ -8,41 +8,10 @@ export default function Moments() {
   const [items, setItems] = useState<MomentItem[]>([]);
   const [selectedMomentIndex, setSelectedMomentIndex] = useState<number | null>(null);
 
-  // Fetch overrides; fall back to static data if not found
+  // Fall back to static data if the DB has no rows yet
   useEffect(() => {
-    fetchOverrides().then(overrides => {
-      const momentsObj = overrides.moments || {};
-      if (Object.keys(momentsObj).length === 0) {
-        setItems(MOMENT_ITEMS);
-        return;
-      }
-      
-      const merged = MOMENT_ITEMS.map(item => {
-        const dbRow = momentsObj[item.id];
-        if (dbRow) {
-          return {
-            id: item.id,
-            imageUrl: dbRow.imageUrl,
-            caption: dbRow.caption,
-            description: dbRow.description ?? item.description,
-            aspect: dbRow.aspect ?? item.aspect,
-          };
-        }
-        return item;
-      });
-      
-      const existingIds = new Set(MOMENT_ITEMS.map(i => i.id));
-      const custom = Object.entries(momentsObj)
-        .filter(([id]) => !existingIds.has(id))
-        .map(([id, data]) => ({
-          id,
-          imageUrl: data.imageUrl,
-          caption: data.caption,
-          description: data.description,
-          aspect: (data.aspect as any) ?? 'square',
-        }));
-      
-      setItems([...merged, ...custom]);
+    getMoments().then((rows) => {
+      setItems(rows.length > 0 ? rows : MOMENT_ITEMS);
     });
   }, []);
 

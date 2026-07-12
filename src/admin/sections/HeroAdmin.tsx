@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { fetchOverrides, saveOverrides } from '../../lib/data-store';
+import { getHero, saveHero, uploadMedia } from '../../lib/cms';
 import { HERO_BG_IMAGE } from '../../data';
 import { Eye, Check, RefreshCw, Upload, Video, X, Image as ImageIcon } from 'lucide-react';
 
@@ -16,25 +16,11 @@ function VideoUploader({ currentUrl, onUploaded }: { currentUrl: string; onUploa
     setError('');
     setUploading(true);
     const ext = file.name.split('.').pop();
-    const filename = `hero-videos/${Date.now()}.${ext}`;
-    
+    const path = `videos/${Date.now()}.${ext}`;
+
     try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        headers: {
-          'x-filename': filename,
-          'Content-Type': file.type,
-        },
-        body: file,
-      });
-      
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || 'Upload failed');
-      }
-      
-      const data = await response.json();
-      onUploaded(data.url);
+      const url = await uploadMedia('hero-media', path, file);
+      onUploaded(url);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -95,25 +81,11 @@ function PosterUploader({ currentUrl, onUploaded }: { currentUrl: string; onUplo
     setError('');
     setUploading(true);
     const ext = file.name.split('.').pop();
-    const filename = `hero-posters/${Date.now()}.${ext}`;
-    
+    const path = `posters/${Date.now()}.${ext}`;
+
     try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        headers: {
-          'x-filename': filename,
-          'Content-Type': file.type,
-        },
-        body: file,
-      });
-      
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || 'Upload failed');
-      }
-      
-      const data = await response.json();
-      onUploaded(data.url);
+      const url = await uploadMedia('hero-media', path, file);
+      onUploaded(url);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -173,11 +145,11 @@ export default function HeroAdmin() {
 
   const fetchActive = async () => {
     setLoading(true);
-    const overrides = await fetchOverrides();
-    if (overrides.hero) {
-      setPosterUrl(overrides.hero.imageUrl || '');
-      setVideoUrl(overrides.hero.videoUrl || '');
-      setCaption(overrides.hero.caption || 'Audio & Video Guestbook');
+    const hero = await getHero();
+    if (hero) {
+      setPosterUrl(hero.imageUrl || '');
+      setVideoUrl(hero.videoUrl || '');
+      setCaption(hero.caption || 'Audio & Video Guestbook');
     }
     setLoading(false);
   };
@@ -189,14 +161,11 @@ export default function HeroAdmin() {
     setError('');
 
     try {
-      const overrides = await fetchOverrides();
-      overrides.hero = {
+      await saveHero({
         imageUrl: posterUrl || HERO_BG_IMAGE,
         videoUrl: videoUrl || null,
         caption: caption || null,
-      };
-      
-      await saveOverrides(overrides);
+      });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
       fetchActive();
