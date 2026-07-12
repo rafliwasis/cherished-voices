@@ -1,21 +1,61 @@
 import { useState, useEffect } from 'react';
 import { Heart, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { fetchOverrides } from '../lib/data-store';
 import { MOMENT_ITEMS } from '../data';
 import { MomentItem } from '../types';
 
 export default function Moments() {
+  const [items, setItems] = useState<MomentItem[]>([]);
   const [selectedMomentIndex, setSelectedMomentIndex] = useState<number | null>(null);
 
-  const selectedMoment = selectedMomentIndex !== null ? MOMENT_ITEMS[selectedMomentIndex] : null;
+  // Fetch overrides; fall back to static data if not found
+  useEffect(() => {
+    fetchOverrides().then(overrides => {
+      const momentsObj = overrides.moments || {};
+      if (Object.keys(momentsObj).length === 0) {
+        setItems(MOMENT_ITEMS);
+        return;
+      }
+      
+      const merged = MOMENT_ITEMS.map(item => {
+        const dbRow = momentsObj[item.id];
+        if (dbRow) {
+          return {
+            id: item.id,
+            imageUrl: dbRow.imageUrl,
+            caption: dbRow.caption,
+            description: dbRow.description ?? item.description,
+            aspect: dbRow.aspect ?? item.aspect,
+          };
+        }
+        return item;
+      });
+      
+      const existingIds = new Set(MOMENT_ITEMS.map(i => i.id));
+      const custom = Object.entries(momentsObj)
+        .filter(([id]) => !existingIds.has(id))
+        .map(([id, data]) => ({
+          id,
+          imageUrl: data.imageUrl,
+          caption: data.caption,
+          description: data.description,
+          aspect: (data.aspect as any) ?? 'square',
+        }));
+      
+      setItems([...merged, ...custom]);
+    });
+  }, []);
+
+  const selectedMoment = selectedMomentIndex !== null ? items[selectedMomentIndex] : null;
 
   const handlePrev = () => {
     if (selectedMomentIndex === null) return;
-    setSelectedMomentIndex((selectedMomentIndex - 1 + MOMENT_ITEMS.length) % MOMENT_ITEMS.length);
+    setSelectedMomentIndex((selectedMomentIndex - 1 + items.length) % items.length);
   };
 
   const handleNext = () => {
     if (selectedMomentIndex === null) return;
-    setSelectedMomentIndex((selectedMomentIndex + 1) % MOMENT_ITEMS.length);
+    setSelectedMomentIndex((selectedMomentIndex + 1) % items.length);
   };
 
   useEffect(() => {
@@ -52,20 +92,29 @@ export default function Moments() {
 
         {/* Horizontal Scroll Strip */}
         <div className="flex overflow-x-auto gap-6 pb-4 snap-x snap-mandatory scrollbar-hide">
-          {MOMENT_ITEMS.map((item, idx) => {
+          {items.map((item, idx) => {
             const aspectClass = 
               item.aspect === '3/4' ? 'aspect-[3/4]' :
               item.aspect === '4/5' ? 'aspect-[4/5]' :
+              item.aspect === '9/16' ? 'aspect-[9/16]' :
+              item.aspect === '2/3' ? 'aspect-[2/3]' :
               'aspect-square';
 
             const widths = [300, 380, 320, 420, 340, 360];
+            const itemWidth = idx < widths.length 
+              ? widths[idx] 
+              : item.aspect === 'square' ? 360 : 
+                item.aspect === '4/5' ? 340 : 
+                item.aspect === '3/4' ? 320 :
+                item.aspect === '2/3' ? 300 :
+                item.aspect === '9/16' ? 280 : 340;
 
             return (
               <div
                 key={item.id}
                 onClick={() => setSelectedMomentIndex(idx)}
                 className={`relative group overflow-hidden ${aspectClass} bg-[#e5e2e1] cursor-pointer shadow-md flex-shrink-0 w-[70vw] snap-start rounded-lg`}
-                style={{ width: widths[idx] }}
+                style={{ width: itemWidth }}
               >
                 {/* Wedding tone overlay */}
                 <div className="wedding-tone-overlay rounded-lg" />
@@ -144,7 +193,7 @@ export default function Moments() {
                 {selectedMoment.caption}
               </h3>
               <p className="font-[family-name:--font-body] text-base text-[#5e5e5d] leading-relaxed">
-                A pristine, tangible record of the laughter, words of wisdom, and raw emotion shared at this premium celebration.
+                {selectedMoment.description ?? 'A pristine, tangible record of the laughter, words of wisdom, and raw emotion shared at this premium celebration.'}
               </p>
             </div>
           </div>

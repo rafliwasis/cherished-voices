@@ -11,41 +11,47 @@ export const MOMENT_ITEMS: MomentItem[] = [
     id: 'm1',
     imageUrl: '/images/cv_1.jpg',
     caption: 'Leaving a voice message at the reception',
+    description: 'Guests step up to the vintage telephone and pour their hearts out — laughter, tears, and heartfelt wishes captured forever in a single take.',
     aspect: '3/4'
   },
   {
     id: 'm2',
     imageUrl: '/images/cv_2.jpg',
     caption: 'Laughter and stories forever recorded',
+    description: 'Every inside joke, every toast, every spontaneous cheer is preserved in pristine audio — a living scrapbook your family will treasure for generations.',
     aspect: 'square'
   },
   {
     id: 'm3',
     imageUrl: '/images/cv_3.jpg',
     caption: 'Vintage setup designed for luxury events',
+    description: 'Our bespoke guestbook booth blends seamlessly into any décor — a timeless centerpiece that draws guests in and invites them to leave their mark.',
     aspect: '4/5'
   },
   {
     id: 'm4',
     imageUrl: '/images/cv_4.jpg',
     caption: 'Picking up the receiver to record',
+    description: 'There is something magical about lifting a handset. It signals the start of something personal — a private moment in the middle of a grand celebration.',
     aspect: '3/4'
   },
   {
     id: 'm5',
     imageUrl: '/images/cv_5.jpg',
     caption: 'Gathering around the memory booth',
+    description: 'Friends and family huddle together, laughing before they even start recording. The booth becomes the heart of the party — a magnet for the warmest moments.',
     aspect: 'square'
   },
   {
     id: 'm6',
     imageUrl: '/images/cv_6.jpg',
     caption: 'Timeless decor for tablescapes',
+    description: 'Styled to complement the finest wedding aesthetics, our setup adds an heirloom quality to your event — beautiful to photograph, even more beautiful to experience.',
     aspect: '4/5'
   }
 ];
 
-export const TESTIMONIALS: Testimonial[] = [
+export const TESTIMONIALS_ROW1: Testimonial[] = [
   {
     id: 't1',
     quote: 'Hearing my grandmother\'s laugh again was the best gift.',
@@ -77,6 +83,41 @@ export const TESTIMONIALS: Testimonial[] = [
     delayClass: 'delay-1'
   }
 ];
+
+export const TESTIMONIALS_ROW2: Testimonial[] = [
+  {
+    id: 't6',
+    quote: 'The setup was beautiful and matched our wedding theme perfectly.',
+    author: 'Emily & David',
+    delayClass: 'delay-1'
+  },
+  {
+    id: 't7',
+    quote: 'Our guests are still talking about it weeks later!',
+    author: 'Rachel W.',
+    delayClass: 'delay-2'
+  },
+  {
+    id: 't8',
+    quote: 'So much better than a traditional guestbook. We love listening to the messages.',
+    author: 'The Johnson Family',
+    delayClass: 'delay-3'
+  },
+  {
+    id: 't9',
+    quote: 'The quality exceeded our expectations. Highly recommend!',
+    author: 'Michael P.',
+    delayClass: 'delay-4'
+  },
+  {
+    id: 't10',
+    quote: 'A beautiful keepsake we will treasure forever.',
+    author: 'Sophie & Alex',
+    delayClass: 'delay-1'
+  }
+];
+
+export const TESTIMONIALS: Testimonial[] = [...TESTIMONIALS_ROW1, ...TESTIMONIALS_ROW2];
 
 export const INITIAL_CALENDAR_EVENTS: CalendarEvent[] = [
   {

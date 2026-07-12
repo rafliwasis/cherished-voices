@@ -41,5 +41,6 @@ export interface MomentItem {
   id: string;
   imageUrl: string;
   caption: string;
-  aspect: '3/4' | 'square' | '4/5' | 'video';
+  description?: string;
+  aspect: '3/4' | 'square' | '4/5' | '9/16' | '2/3' | 'video';
 }
