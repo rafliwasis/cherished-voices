@@ -3,11 +3,23 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 import fs from 'fs';
+import dotenv from 'dotenv';
+import eventsHandler from './api/events';
+
+dotenv.config({ path: path.resolve(__dirname, '.env.local') });
 
 function localUploadPlugin() {
   return {
     name: 'local-upload',
     configureServer(server: any) {
+      server.middlewares.use('/api/events', (req: any, res: any, next: any) => {
+        if (req.method === 'GET') {
+          eventsHandler(req, res);
+          return;
+        }
+        next();
+      });
+
       server.middlewares.use('/api/upload', (req: any, res: any, next: any) => {
         if (req.method === 'POST') {
           const filename = req.headers['x-filename'] as string;
