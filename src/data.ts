@@ -51,73 +51,88 @@ export const MOMENT_ITEMS: MomentItem[] = [
   }
 ];
 
-export const TESTIMONIALS_ROW1: Testimonial[] = [
+// =====================================================================
+// TESTIMONIAL — Cara nambah data testimonial baru:
+// =====================================================================
+// Cukup copy block di bawah ini, tempel di array TESTIMONIALS,
+// lalu isi data-nya:
+//
+// {
+//   id: 't11',                                  // ID unik (t1, t2, t3, ...)
+//   quote: 'Tulis testimoni di sini...',         // Isi testimoni
+//   author: 'Nama Client / Pasangan',            // Nama orang/pasangan
+//   avatar: 'https://ui-avatars.com/api/?name=Nama+Client&background=912A55&color=fff&size=64',  // URL foto (ganti bebas)
+// },
+//
+// Catatan:
+//   - id   → pakai prefix 't' + nomor urut (t1, t2, t3, ...)
+//   - quote → teks bebas, boleh pakai 'petik satu' dengan backslash \'
+//   - avatar → path gambar sendiri, letakkan di folder public/images/
+//   - urutan card akan otomatis terbagi rata ke 2 baris marquee
+// =====================================================================
+
+export const TESTIMONIALS: Testimonial[] = [
   {
     id: 't1',
-    quote: 'Hearing my grandmother\'s laugh again was the best gift.',
-    author: 'Sarah & Mark',
-    delayClass: 'delay-1'
+    quote: 'baikkk!! thank you banget ya kakkkk 🥺🥺🥺🥺 walau kita ga sempet ke atas tp melihat orgorg pd ngisi, LUCU BINGITTTTTTT 😊😊😊❤️❤️ MAKASIH BANYAK KA AMMAR & KA AISYAH SERTA TIM CHERISHED VOICES LAINNYA. ditunggu hasilnyaaaaaaaaa aaaaaa tidak sabaar 🥰🥰🥰',
+    author: 'Cherie & Radit',
+    avatar: 'https://ui-avatars.com/api/?name=Cherie+%26+Radit&background=912A55&color=fff&size=64',
   },
   {
     id: 't2',
-    quote: 'The video quality was stunning. It felt like being back at the reception.',
-    author: 'James T.',
-    delayClass: 'delay-2'
+    quote: 'Omg thank you hahahaha. Lucu lucu bangett moment gt. Thank you ya sekali lagii teamm. Pokoknya thank you udah bantuin! Udh aku save semua video dan upload🥳🌸 suka banget. Next amin kalo wedding HAHA aku pake lagiii',
+    author: 'Jessica',
+    avatar: 'https://ui-avatars.com/api/?name=Jessica&background=912A55&color=fff&size=64',
   },
   {
     id: 't3',
-    quote: 'Every guest loved how easy it was to use. Such a unique addition to our wedding!',
-    author: 'Chloe V.',
-    delayClass: 'delay-3'
+    quote: 'halo team cherishedvoices! thank you so much yaaa sudah berpartisipasi diacaraku kemarinnn.. maaf kalau banyak kurangnyaaa.. semoga kalian sukses selalu yaaaa!! semoga juga kita berjodoh lagi barengan di next event lainnyaaa.. AAAMMMIINNN🩵🌸',
+    author: 'Intan & Aziz',
+    avatar: 'https://ui-avatars.com/api/?name=Intan+%26+Aziz&background=912A55&color=fff&size=64',
   },
   {
     id: 't4',
-    quote: 'The audio guestbook captured the true energy of the night.',
-    author: 'The Miller Family',
-    delayClass: 'delay-4'
+    quote: 'Haloo kak ammar!! Maaf baru bales kakkk 😭Kita juga makasih banget yaaa kak dari cv udah ramaikan acara nikahan kitaaa, seneng banget bisa denger ucapan dari teman dan kerabat kitaa 🧡Aku juga udah liat post di tiktok nya lucu bangettt hehehehe. Once again thankyou so much for cv!! Semoga kita bisa ketemu lagi di event lainnya yaaa kakkk',
+    author: 'Dila & Ari',
+    avatar: 'https://ui-avatars.com/api/?name=Dila+%26+Ari&background=912A55&color=fff&size=64',
   },
   {
     id: 't5',
-    quote: 'Worth every single penny. These memories are priceless.',
-    author: 'Amanda R.',
-    delayClass: 'delay-1'
-  }
-];
-
-export const TESTIMONIALS_ROW2: Testimonial[] = [
+    quote: 'kaaa thank you so much yahhh🥺💜 aminamin makasih doanyaaa & makasihhhh krn hasilnya lucu2 hehehe',
+    author: 'Karin & Fadil',
+    avatar: 'https://ui-avatars.com/api/?name=Karin+%26+Fadil&background=912A55&color=fff&size=64',
+  },
   {
     id: 't6',
-    quote: 'The setup was beautiful and matched our wedding theme perfectly.',
-    author: 'Emily & David',
-    delayClass: 'delay-1'
+    quote: 'Hi Kak Ammar & Aisyah!! Thank you so so much for making our wedding more fun & special!! 🥺🥺🤍🤍',
+    author: 'Feli',
+    avatar: 'https://ui-avatars.com/api/?name=Feli&background=912A55&color=fff&size=64',
   },
   {
     id: 't7',
-    quote: 'Our guests are still talking about it weeks later!',
-    author: 'Rachel W.',
-    delayClass: 'delay-2'
+    quote: 'woaaaa aku baru sempet nonton videonya, seruuuu sekaliiii. makasih yaaaa untuk kerja samanya.',
+    author: 'Nia',
+    avatar: 'https://ui-avatars.com/api/?name=Nia&background=912A55&color=fff&size=64',
   },
   {
     id: 't8',
-    quote: 'So much better than a traditional guestbook. We love listening to the messages.',
-    author: 'The Johnson Family',
-    delayClass: 'delay-3'
+    quote: 'Halo kak aisyah, mas ammar dan mba sabina, TERIMAKASIH BANYAKKK YAAAA!!! maaf akuu baru sempattt responnnn, aku lagi balik ke kampung halaman sama bella😁😁, jadi agak susahh sinyallll, tapi terimakasihhh banyakkk untuk tim cherished voices udah ikut sertaaa membantu memeriahkan pernikahan aku dan bellaaa, makasih banyakkk yaaaa!!!!',
+    author: 'Ericx',
+    avatar: 'https://ui-avatars.com/api/?name=Ericx&background=912A55&color=fff&size=64',
   },
   {
     id: 't9',
-    quote: 'The quality exceeded our expectations. Highly recommend!',
-    author: 'Michael P.',
-    delayClass: 'delay-4'
+    quote: 'Hi Kak, makasih banyak yaa kak atas bantuan dan kerjasamanya selama wedding prep and the event itself! Banyak yg muji lucu video guestbook nyaa🫶🏻',
+    author: 'Rahma',
+    avatar: 'https://ui-avatars.com/api/?name=Rahma&background=912A55&color=fff&size=64',
   },
   {
     id: 't10',
-    quote: 'A beautiful keepsake we will treasure forever.',
-    author: 'Sophie & Alex',
-    delayClass: 'delay-1'
-  }
+    quote: 'love banget kemarin selama acara impresinya bagus banget!! kami juga minta terimakasih banget ya kak udah bantu ramein acara dan bikin konsep audio guestbook jni!! love banget konsepnya semuanya!! bisa di patenin ga si kak? kalo bisa jangan lupa di patenin di indo wkwkwkw',
+    author: 'Elizabeth',
+    avatar: 'https://ui-avatars.com/api/?name=Elizabeth&background=912A55&color=fff&size=64',
+  },
 ];
-
-export const TESTIMONIALS: Testimonial[] = [...TESTIMONIALS_ROW1, ...TESTIMONIALS_ROW2];
 
 export const INITIAL_CALENDAR_EVENTS: CalendarEvent[] = [
   {

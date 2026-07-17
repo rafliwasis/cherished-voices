@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Info } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { CalendarEvent } from '../types';
 
@@ -79,37 +79,37 @@ export default function CalendarSection({
   };
 
   return (
-    <section className="py-24 md:py-32 bg-white" id="calendar">
+    <section className="py-24 md:py-32 bg-[#912A55]" id="calendar">
       <div className="px-6 md:px-16 max-w-[1200px] mx-auto">
         
         {/* Title block */}
         <div className="text-center mb-16 space-y-4">
-          <span className="font-sans text-xs font-semibold text-[#912A55] uppercase tracking-[0.25em] block">
+          <span className="font-sans text-xs font-semibold text-white uppercase tracking-[0.25em] block">
             Event Schedule
           </span>
-          <h2 className="font-serif text-4xl md:text-6xl font-light italic text-[#1C1B1B]">
+          <h2 className="font-serif text-4xl md:text-6xl font-light italic text-white">
             Calendar
           </h2>
-          <div className="w-12 h-[1px] bg-[#912A55] mx-auto mt-6" />
+          <div className="w-12 h-[1px] bg-white mx-auto mt-6" />
         </div>
 
         {/* Dynamic Month Selector */}
         <div className="flex items-center justify-center gap-8 mb-12 select-none">
           <button
             onClick={handlePrevMonth}
-            className="p-2 border border-[#D9BDD0]/40 hover:border-[#912A55] hover:text-[#912A55] text-[#5e5e5d] transition-all rounded-sm cursor-pointer"
+            className="p-2 border border-white/40 hover:border-white hover:text-white text-white/80 transition-all rounded-sm cursor-pointer"
             aria-label="Previous Month"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           
-          <h3 className="font-serif text-3xl font-light italic text-[#1C1B1B] min-w-[240px] text-center">
+          <h3 className="font-serif text-3xl font-light italic text-white min-w-[240px] text-center">
             {MONTHS[month]} {year}
           </h3>
 
           <button
             onClick={handleNextMonth}
-            className="p-2 border border-[#D9BDD0]/40 hover:border-[#912A55] hover:text-[#912A55] text-[#5e5e5d] transition-all rounded-sm cursor-pointer"
+            className="p-2 border border-white/40 hover:border-white hover:text-white text-white/80 transition-all rounded-sm cursor-pointer"
             aria-label="Next Month"
           >
             <ChevronRight className="w-5 h-5" />
@@ -117,7 +117,7 @@ export default function CalendarSection({
         </div>
 
         {/* Refined Grid Box */}
-        <div className="max-w-4xl mx-auto border border-[#debfbf]/20 bg-[#fcf9f8]/30 p-6 md:p-8 rounded-lg shadow-sm">
+        <div className="max-w-4xl mx-auto border border-[#debfbf]/20 bg-white p-6 md:p-8 rounded-lg shadow-sm">
           {/* Days of the Week Header */}
           <div className="grid grid-cols-7 text-center border-b border-[#debfbf]/20 pb-4 mb-4 font-sans text-xs font-semibold uppercase tracking-widest text-[#574141]/70">
             <div>Mon</div>
@@ -143,19 +143,25 @@ export default function CalendarSection({
               
               const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
               const isToday = formattedDate === getTodayString();
-              const visibleDots = dayEvents.slice(0, 2);
-              const overflowCount = dayEvents.length - 2;
+              const hc = Math.min(dayEvents.length, 4);
+              const topN = hc <= 2 ? 0 : hc === 3 ? 1 : 2;
+              const bottomN = hc - topN;
+              const overflowCount = dayEvents.length - 4;
+              const h = (key: number) => (
+                <Heart key={key} className="w-1.5 h-1.5 md:w-2 md:h-2 text-[#912A55] fill-[#912A55]" />
+              );
 
+              const fallbackType = formattedDate < getTodayString() ? 'past' : 'upcoming';
               return (
                 <div
                   key={`day-${day}`}
-                  onClick={() => onOpenEventModal(dayEvents[0] || { id: 'empty', date: formattedDate, title: '', location: '', type: 'upcoming' } as CalendarEvent, dayEvents.length > 0 ? dayEvents : [])}
+                  onClick={() => onOpenEventModal(dayEvents[0] || { id: 'empty', date: formattedDate, title: '', location: '', type: fallbackType } as CalendarEvent, dayEvents.length > 0 ? dayEvents : [])}
                   className={`h-16 md:h-20 flex flex-col items-center justify-center relative transition-all rounded-sm cursor-pointer hover:bg-[#690018]/5 group ${
                     hasEvents ? '' : 'text-[#1c1b1b]'
                   }`}
                 >
                   <span 
-                    className={`font-sans text-sm md:text-base font-medium flex items-center justify-center ${
+                    className={`font-sans text-sm md:text-base font-medium flex items-center justify-center relative z-10 ${
                       isToday
                         ? 'w-10 h-10 bg-[#F4DCEA] rounded-full text-[#912A55] font-semibold'
                         : 'text-[#1c1b1b]'
@@ -164,31 +170,36 @@ export default function CalendarSection({
                     {day}
                   </span>
 
-                  {hasEvents && (
-                    <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 flex items-center gap-0.5 justify-center">
-                      {visibleDots.map((evt, evtIdx) => (
-                        <span 
-                          key={`${evt.id}-${evtIdx}`}
-                          className={`text-[10px] md:text-[12px] font-bold leading-none ${
-                            evt.type === 'past' 
-                              ? 'text-[#c4b5b5]'
-                              : 'text-[#912A55]'
-                          }`}
-                        >
-                          ●
-                        </span>
-                      ))}
-                      {overflowCount > 0 && (
-                        <span className="text-[9px] md:text-[10px] font-sans font-semibold text-[#912A55] leading-none ml-0.5">
-                          +{overflowCount}
-                        </span>
-                      )}
+                  {hasEvents && topN > 0 && (
+                    <div
+                      className="absolute left-1/2 flex justify-center leading-none"
+                      style={{ bottom: 'calc(50% + 14px)', transform: 'translateX(-50%)' }}
+                    >
+                      {topN === 1 ? h(0) : <span className="flex gap-px">{h(0)}{h(1)}</span>}
                     </div>
+                  )}
+
+                  {hasEvents && bottomN > 0 && (
+                    <div
+                      className="absolute left-1/2 flex justify-center leading-none"
+                      style={{ top: 'calc(50% + 14px)', transform: 'translateX(-50%)' }}
+                    >
+                      {bottomN === 1 ? h(topN) : <span className="flex gap-px">{h(topN)}{h(topN + 1)}</span>}
+                    </div>
+                  )}
+
+                  {hasEvents && overflowCount > 0 && (
+                    <span
+                      className="absolute left-1/2 font-sans font-semibold text-[#912A55] leading-none"
+                      style={{ top: 'calc(50% + 22px)', transform: 'translateX(-50%)' }}
+                    >
+                      +{overflowCount}
+                    </span>
                   )}
 
                   {hasEvents && (
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-20 bg-[#303232] text-white text-[10px] py-1 px-2 uppercase tracking-wider whitespace-nowrap rounded shadow-md pointer-events-none">
-                      {dayEvents[0].type === 'past' 
+                      {formattedDate < getTodayString()
                         ? `View ${dayEvents.length} Past ${dayEvents.length === 1 ? 'Event' : 'Events'}`
                         : `${dayEvents.length} Upcoming ${dayEvents.length === 1 ? 'Event' : 'Events'}`
                       }

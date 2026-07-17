@@ -5,8 +5,8 @@ export default function AboutUs() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-center">
           
           {/* Left Block: Video */}
-          <div className="md:col-span-4">
-            <div className="relative aspect-[3/4] bg-[#303232] rounded-lg shadow-md border border-[#8b1a2b]/20 overflow-hidden">
+          <div className="md:col-span-5">
+            <div className="relative aspect-[4/3] bg-[#303232] rounded-lg shadow-md border border-[#8b1a2b]/20 overflow-hidden">
               <div className="wedding-tone-overlay rounded-lg" />
               <video
                 className="w-full h-full object-cover wedding-tone"
@@ -20,7 +20,7 @@ export default function AboutUs() {
           </div>
 
           {/* Right Block: Pitch & Details */}
-          <div className="md:col-span-8 space-y-6">
+          <div className="md:col-span-7 space-y-6">
             <span className="font-sans text-xs font-semibold text-[#912A55] uppercase tracking-[0.25em] block">
               ABOUT US
             </span>
@@ -28,7 +28,7 @@ export default function AboutUs() {
               What is Cherished Voices?
             </h2>
             <p className="font-[family-name:--font-body] text-lg md:text-xl text-[#574141] leading-relaxed">
-              Cherished Voices is a premium audio &amp; video guestbook service where guests record heartfelt voice and video messages for the celebrant, preserving memories forever. Available for weddings, gatherings, and birthday celebrations.
+              For weddings and celebrations too significant for a signature. A living archive of voices preserved in cinematic audio and video, exactly as they happened. Intimate. Unfiltered. Forever. A moment you don't just remember but return to for a lifetime.
             </p>
           </div>
 
