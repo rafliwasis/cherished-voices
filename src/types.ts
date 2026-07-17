@@ -34,7 +34,7 @@ export interface Testimonial {
   id: string;
   quote: string;
   author: string;
-  delayClass: string;
+  avatar?: string;
 }
 
 export interface MomentItem {

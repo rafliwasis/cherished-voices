@@ -42,11 +42,13 @@ export default function Navbar() {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className={`font-[family-name:--font-script] text-3xl transition-colors duration-300 leading-none ${
-              isScrolled ? 'text-[#912A55]' : 'text-white'
-            }`}
+            className="block leading-none"
           >
-            Cherished Voices
+            <img
+              src={isScrolled ? '/logo/cherished-logo-og.png' : '/logo/cherished-voices-white.png'}
+              alt="Cherished Voices"
+              className="h-9 md:h-11 w-auto transition-all duration-300"
+            />
           </a>
 
           {/* Desktop Navigation Links */}
@@ -107,8 +109,7 @@ export default function Navbar() {
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="flex justify-between items-center mb-12">
-          <span className="font-[family-name:--font-script] text-2xl text-[#912A55] leading-none">Cherished Voices</span>
+        <div className="flex justify-end items-center mb-12">
           <button onClick={() => setIsMobileMenuOpen(false)} className="p-1">
             <X className="w-5 h-5 text-[#1C1B1B]" />
           </button>

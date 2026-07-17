@@ -1,36 +1,57 @@
-import { TESTIMONIALS_ROW1, TESTIMONIALS_ROW2 } from '../data';
+import { Testimonial } from '../types';
+import { TESTIMONIALS } from '../data';
 
-function TestimonialCard({ quote, author }: { quote: string; author: string }) {
+function TestimonialCard({ quote, author, avatar }: { quote: string; author: string; avatar?: string }) {
   return (
     <div className="flex-shrink-0 mx-5 w-[300px] md:w-[360px]">
       <div className="message-bubble-received">
         <p className="font-sans text-[13px] md:text-[14px] text-[#1C1820] leading-relaxed mb-3">
           {quote}
         </p>
-        <span className="font-sans text-[9px] font-semibold text-[#912A55] uppercase tracking-[0.08em] block">
-          {author}
-        </span>
+        <div className="flex items-center justify-between">
+          <span className="font-sans text-[9px] font-semibold text-[#912A55] uppercase tracking-[0.08em]">
+            {author}
+          </span>
+          {avatar && (
+            <img
+              src={avatar}
+              alt={author}
+              className="w-7 h-7 md:w-8 md:h-8 rounded-full flex-shrink-0 object-cover"
+            />
+          )}
+        </div>
       </div>
     </div>
   );
+}
+
+function splitRows(items: Testimonial[]): [Testimonial[], Testimonial[]] {
+  const row1: Testimonial[] = [];
+  const row2: Testimonial[] = [];
+  items.forEach((item, i) => {
+    if (i % 2 === 0) row1.push(item);
+    else row2.push(item);
+  });
+  return [row1, row2];
 }
 
 function MarqueeRow({
   data,
   reverse = false,
 }: {
-  data: typeof TESTIMONIALS_ROW1;
+  data: Testimonial[];
   reverse?: boolean;
 }) {
   const doubled = [...data, ...data];
 
   return (
     <div className="relative w-full overflow-hidden">
-      <div className="pointer-events-none absolute left-0 top-0 h-full w-20 md:w-32 z-10 bg-gradient-to-r from-[#F8F4F7] to-transparent" />
       <div
-        className="flex min-w-[200%]"
+        className="marquee-track flex w-[200%]"
         style={{
-          animation: `marqueeScroll 25s linear infinite`,
+          animationName: 'marqueeScroll',
+          animationTimingFunction: 'linear',
+          animationIterationCount: 'infinite',
           animationDirection: reverse ? 'reverse' : 'normal',
         }}
       >
@@ -39,15 +60,17 @@ function MarqueeRow({
             key={`${item.id}-${i}`}
             quote={item.quote}
             author={item.author}
+            avatar={item.avatar}
           />
         ))}
       </div>
-      <div className="pointer-events-none absolute right-0 top-0 h-full w-20 md:w-32 z-10 bg-gradient-to-l from-[#F8F4F7] to-transparent" />
     </div>
   );
 }
 
 export default function Testimonials() {
+  const [row1, row2] = splitRows(TESTIMONIALS);
+
   return (
     <>
       <style>{`
@@ -80,9 +103,23 @@ export default function Testimonials() {
           transform: translate(-30px, -2px);
           width: 10px;
         }
+        .marquee-track {
+          will-change: transform;
+          backface-visibility: hidden;
+        }
         @keyframes marqueeScroll {
-          0% { transform: translateX(0%); }
-          100% { transform: translateX(-50%); }
+          0% { transform: translate3d(0, 0, 0); }
+          100% { transform: translate3d(-50%, 0, 0); }
+        }
+        @media (max-width: 767px) {
+          .marquee-track {
+            animation-duration: 15s !important;
+          }
+        }
+        @media (min-width: 768px) {
+          .marquee-track {
+            animation-duration: 25s !important;
+          }
         }
       `}</style>
 
@@ -90,18 +127,15 @@ export default function Testimonials() {
         <div className="px-6 md:px-16">
 
           <div className="text-center mb-12 space-y-4">
-            <span className="font-sans text-xs font-semibold text-[#912A55] uppercase tracking-[0.25em] block">
-              What They Say
-            </span>
             <h2 className="font-serif text-4xl md:text-6xl font-light italic text-[#1C1820]">
-              Testimonials
+              What They Say
             </h2>
             <div className="w-12 h-[1px] bg-[#912A55] mx-auto mt-6" />
           </div>
 
           <div className="flex flex-col gap-8">
-            <MarqueeRow data={TESTIMONIALS_ROW1} reverse={true} />
-            <MarqueeRow data={TESTIMONIALS_ROW2} reverse={false} />
+            <MarqueeRow data={row1} reverse={true} />
+            <MarqueeRow data={row2} reverse={false} />
           </div>
         </div>
       </section>

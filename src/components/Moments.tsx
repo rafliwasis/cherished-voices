@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Heart, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { fetchOverrides } from '../lib/data-store';
 import { MOMENT_ITEMS } from '../data';
@@ -46,6 +46,8 @@ export default function Moments() {
     });
   }, []);
 
+  const scrollStripRef = useRef<HTMLDivElement>(null);
+
   const selectedMoment = selectedMomentIndex !== null ? items[selectedMomentIndex] : null;
 
   const handlePrev = () => {
@@ -75,6 +77,17 @@ export default function Moments() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedMomentIndex]);
 
+  // Sync scroll strip with currently selected moment
+  useEffect(() => {
+    if (selectedMomentIndex === null || !scrollStripRef.current) return;
+    const container = scrollStripRef.current;
+    const cards = container.children;
+    const target = cards[selectedMomentIndex] as HTMLElement;
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }, [selectedMomentIndex]);
+
   return (
     <section className="py-24 md:py-32 bg-white" id="moments">
       <div className="px-6 md:px-16">
@@ -91,7 +104,7 @@ export default function Moments() {
         </div>
 
         {/* Horizontal Scroll Strip */}
-        <div className="flex overflow-x-auto gap-6 pb-4 snap-x snap-mandatory scrollbar-hide">
+        <div ref={scrollStripRef} className="flex overflow-x-auto gap-6 pb-4 snap-x snap-mandatory scrollbar-hide">
           {items.map((item, idx) => {
             const aspectClass = 
               item.aspect === '3/4' ? 'aspect-[3/4]' :
@@ -113,7 +126,7 @@ export default function Moments() {
               <div
                 key={item.id}
                 onClick={() => setSelectedMomentIndex(idx)}
-                className={`relative group overflow-hidden ${aspectClass} bg-[#e5e2e1] cursor-pointer shadow-md flex-shrink-0 w-[70vw] snap-start rounded-lg`}
+                    className={`relative group overflow-hidden ${aspectClass} bg-[#e5e2e1] cursor-pointer shadow-md flex-shrink-0 w-[70vw] snap-start rounded-lg transition-all duration-300 ${selectedMomentIndex === idx ? 'ring-2 ring-[#912A55] shadow-lg' : ''}`}
                 style={{ width: itemWidth }}
               >
                 {/* Wedding tone overlay */}
@@ -187,7 +200,7 @@ export default function Moments() {
 
             <div className="p-6 md:p-8 space-y-3">
               <span className="font-sans text-[10px] font-semibold text-[#912A55] uppercase tracking-widest block">
-                Cherished Archive
+                Cherished Moments
               </span>
               <h3 className="font-serif text-2xl font-light italic text-[#1c1b1b]">
                 {selectedMoment.caption}
