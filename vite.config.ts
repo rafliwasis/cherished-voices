@@ -4,7 +4,6 @@ import path from 'path';
 import {defineConfig} from 'vite';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import eventsHandler from './api/events';
 
 dotenv.config({ path: path.resolve(__dirname, '.env.local') });
 
@@ -12,14 +11,6 @@ function eventsApiPlugin() {
   return {
     name: 'events-api',
     configureServer(server: any) {
-      server.middlewares.use('/api/events', (req: any, res: any, next: any) => {
-        if (req.method === 'GET') {
-          eventsHandler(req, res);
-          return;
-        }
-        next();
-      });
-
       // Save testimonials to data.ts
       server.middlewares.use('/api/save-testimonials', (req: any, res: any, next: any) => {
         if (req.method === 'POST') {
