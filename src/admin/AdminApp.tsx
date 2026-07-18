@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Routes, Route, NavLink } from 'react-router-dom';
 import HeroAdmin from './sections/HeroAdmin';
 import MomentsAdmin from './sections/MomentsAdmin';
+import TestimonialsAdmin from './sections/TestimonialsAdmin';
 import { supabase } from '../lib/supabase';
-import { Image, LayoutTemplate, LogOut, ExternalLink, Menu, X } from 'lucide-react';
+import { Image, LayoutTemplate, LogOut, ExternalLink, Menu, X, MessageSquare } from 'lucide-react';
 
 const NAV_ITEMS = [
   { to: '/admin', label: 'Hero', icon: LayoutTemplate, end: true },
   { to: '/admin/moments', label: 'Moments', icon: Image, end: false },
+  { to: '/admin/testimonials', label: 'Testimonials', icon: MessageSquare, end: false },
 ];
 
   export default function AdminApp() {
@@ -149,6 +151,7 @@ const NAV_ITEMS = [
           <Routes>
             <Route path="/" element={<HeroAdmin />} />
             <Route path="/moments" element={<MomentsAdmin />} />
+            <Route path="/testimonials" element={<TestimonialsAdmin />} />
           </Routes>
         </main>
       </div>
