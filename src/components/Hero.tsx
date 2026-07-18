@@ -10,14 +10,11 @@ interface HeroProps {
 export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
   const [heroBg, setHeroBg] = useState<string>(HERO_BG_IMAGE);
   const [heroVideo, setHeroVideo] = useState<string>('/hero-cherished.mp4');
-  const [heroCaption, setHeroCaption] = useState<string>('Audio & Video Guestbook');
-
   useEffect(() => {
     getHero().then((hero) => {
       if (hero) {
         if (hero.imageUrl) setHeroBg(hero.imageUrl);
         if (hero.videoUrl) setHeroVideo(hero.videoUrl);
-        if (hero.caption) setHeroCaption(hero.caption);
       }
     });
   }, []);
@@ -43,16 +40,12 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
 
       {/* Floating typography card content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto text-white mt-12 md:mt-16">
-        <span className="inline-block font-[family-name:--font-body] text-sm italic text-[#F4DCEA]/90 mb-4 md:mb-6 tracking-wide">
-          {heroCaption}
-        </span>
-        
         <h1 className="font-serif text-5xl md:text-7xl font-light italic tracking-tight leading-[1.05] mb-6 drop-shadow-sm">
           Every Voice, Forever Cherished
         </h1>
         
         <p className="font-[family-name:--font-body] text-lg md:text-xl text-white/85 max-w-2xl mx-auto leading-relaxed mb-10">
-          Capture every heartfelt message, every spontaneous laugh, and every whispered wish, preserving them as living memories to be revisited forever.
+          A premium audio & video guestbook service for weddings and celebrations — where every message becomes a timeless recording, not just a signature.
         </p>
 
         {/* Call to Actions */}
@@ -61,7 +54,7 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
             onClick={onCheckAvailability}
             className="w-full sm:w-auto px-10 py-4 md:py-5 bg-[#912A55] hover:bg-[#B05480] text-white font-sans text-xs font-medium uppercase tracking-[0.15em] transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer rounded-full"
           >
-            Check Availability
+            Reserve Your Date
           </button>
           <button
             onClick={onContactUs}
