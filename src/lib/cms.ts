@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase, supabasePublic } from './supabase';
 import type { MomentItem } from '../types';
 
 export interface HeroContent {
@@ -12,7 +12,7 @@ export interface MomentRow extends MomentItem {
 }
 
 export async function getHero(): Promise<HeroContent | null> {
-  const { data, error } = await supabase
+  const { data, error } = await supabasePublic
     .from('hero_highlights')
     .select('image_url, video_url, caption')
     .eq('is_active', true)
@@ -47,7 +47,7 @@ export async function saveHero(content: HeroContent): Promise<void> {
 }
 
 export async function getMoments(): Promise<MomentRow[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabasePublic
     .from('moments')
     .select('id, image_url, caption, description, aspect, sort_order')
     .order('sort_order', { ascending: true });
