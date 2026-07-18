@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -15,14 +16,15 @@ export default function AdminLogin() {
     setLoading(true);
     setError('');
 
-    // Simulate slight delay for UX
-    await new Promise(resolve => setTimeout(resolve, 800));
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email: username,
+      password,
+    });
 
-    if (username === 'admin' && password === 'cherished12345') {
-      localStorage.setItem('admin_auth', 'true');
-      navigate('/admin');
+    if (authError) {
+      setError('Invalid email or password.');
     } else {
-      setError('Invalid username or password.');
+      navigate('/admin');
     }
     setLoading(false);
   };
@@ -57,15 +59,15 @@ export default function AdminLogin() {
             {/* Username */}
             <div className="space-y-1.5">
               <label htmlFor="admin-username" className="font-sans text-xs font-medium text-[#5e5e5d] uppercase tracking-widest">
-                Username
+                Email
               </label>
               <input
                 id="admin-username"
-                type="text"
+                type="email"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter username"
+                placeholder="Enter email"
                 className="w-full px-4 py-3 border border-[#D9BDD0]/50 rounded-lg bg-[#FCF9F8] font-sans text-sm text-[#1C1B1B] placeholder:text-[#5e5e5d]/40 focus:outline-none focus:border-[#912A55] focus:ring-2 focus:ring-[#912A55]/10 transition-all"
               />
             </div>
