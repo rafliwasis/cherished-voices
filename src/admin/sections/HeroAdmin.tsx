@@ -181,9 +181,6 @@ export default function HeroAdmin() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-serif text-3xl font-light italic text-[#1C1B1B]">Hero Highlight</h2>
-          <p className="font-sans text-sm text-[#5e5e5d] mt-1">
-            Edit the background video, poster image, and caption shown on the public homepage.
-          </p>
         </div>
         <button onClick={fetchActive} className="p-2 text-[#5e5e5d] hover:text-[#912A55] transition-colors cursor-pointer" aria-label="Refresh">
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />

@@ -122,9 +122,6 @@ export default function TestimonialsAdmin() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="font-serif text-3xl font-light italic text-[#1C1B1B]">Testimonials</h2>
-          <p className="font-sans text-sm text-[#5e5e5d] mt-1">
-            Manage what your clients say. Changes are saved directly to <code className="text-[10px] bg-[#F4DCEA] text-[#912A55] px-1.5 py-0.5 rounded">src/data.ts</code>.
-          </p>
         </div>
         <div className="flex items-center gap-3">
           <button 
