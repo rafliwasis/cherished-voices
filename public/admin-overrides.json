@@ -4,12 +4,5 @@
     "videoUrl": "/hero-videos/1783850597693.mp4",
     "caption": "Bespoke Memory Preservation"
   },
-  "moments": {
-    "custom_1783850768295": {
-      "imageUrl": "/images/custom_1783850757143.jpg",
-      "caption": "Testing",
-      "description": "Testing Description",
-      "aspect": "4/5"
-    }
-  }
+  "moments": {}
 }
