@@ -15,6 +15,7 @@ import {
   Save,
   Image as ImageIcon,
 } from "lucide-react";
+import ConfirmModal from "../components/ConfirmModal";
 
 // ── Local Image Uploader ──
 function ImageUploader({
@@ -116,6 +117,9 @@ export default function MomentsAdmin() {
   const [editImageUrl, setEditImageUrl] = useState("");
   const [editAspect, setEditAspect] = useState<MomentItem["aspect"]>("square");
   const [error, setError] = useState("");
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<"save" | "delete" | null>(null);
+  const [pendingMoment, setPendingMoment] = useState<MomentRow | null>(null);
 
   const fetchMoments = async () => {
     setLoading(true);
@@ -174,6 +178,9 @@ export default function MomentsAdmin() {
       setError(err.message);
       setSavingId(null);
     }
+    setConfirmOpen(false);
+    setPendingAction(null);
+    setPendingMoment(null);
   };
 
   const handleAddNew = () => {
@@ -198,15 +205,39 @@ export default function MomentsAdmin() {
     setError("");
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this moment?")) return;
-
-    try {
-      await deleteMoment(id);
-      await fetchMoments();
-    } catch (err: any) {
-      setError(err.message);
+  const handleSaveClick = (m: MomentRow) => {
+    if (!editCaption.trim()) {
+      setError("Title is required.");
+      return;
     }
+    setPendingAction("save");
+    setPendingMoment(m);
+    setConfirmOpen(true);
+  };
+
+  const requestDeleteConfirmation = (m: MomentRow) => {
+    setPendingAction("delete");
+    setPendingMoment(m);
+    setConfirmOpen(true);
+  };
+
+  const proceedWithPendingAction = async () => {
+    if (!pendingMoment) return;
+
+    if (pendingAction === "delete") {
+      try {
+        await deleteMoment(pendingMoment.id);
+        await fetchMoments();
+      } catch (err: any) {
+        setError(err.message);
+      }
+    } else if (pendingAction === "save") {
+      await handleSave(pendingMoment);
+    }
+
+    setConfirmOpen(false);
+    setPendingAction(null);
+    setPendingMoment(null);
   };
 
   const aspectClass = (aspect: string) => {
@@ -345,7 +376,7 @@ export default function MomentsAdmin() {
                         </div>
                         <div className="flex items-center gap-2 pt-1">
                           <button
-                            onClick={() => handleSave(m)}
+                            onClick={() => handleSaveClick(m)}
                             disabled={isSaving}
                             className="flex items-center gap-1.5 px-4 py-2 bg-[#912A55] hover:bg-[#B05480] disabled:opacity-50 text-white font-sans text-xs font-medium uppercase tracking-widest rounded-full cursor-pointer"
                           >
@@ -365,7 +396,7 @@ export default function MomentsAdmin() {
                           </button>
                           {!isNew && (
                             <button
-                              onClick={() => handleDelete(m.id)}
+                              onClick={() => requestDeleteConfirmation(m)}
                               className="ml-auto text-red-500 hover:text-red-600 font-sans text-[10px] uppercase tracking-widest font-semibold px-2"
                             >
                               Delete
@@ -398,7 +429,7 @@ export default function MomentsAdmin() {
                             <Pencil className="w-3 h-3" /> Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(m.staticId)}
+                            onClick={() => requestDeleteConfirmation(m)}
                             className="flex items-center gap-1.5 px-4 py-2 border border-red-200 hover:border-red-400 text-red-400 hover:text-red-600 hover:bg-red-50 font-sans text-xs font-medium uppercase tracking-widest rounded-full cursor-pointer transition-all"
                           >
                             <X className="w-3 h-3" /> Delete
@@ -418,6 +449,21 @@ export default function MomentsAdmin() {
           })}
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        title={pendingAction === "delete" ? "Delete this moment?" : "Save changes?"}
+        message={pendingAction === "delete" ? "Are you sure you want to delete this moment?" : "Are you sure you want to save these changes?"}
+        confirmLabel={pendingAction === "delete" ? "Yes, delete" : "Yes"}
+        cancelLabel="No"
+        destructive={pendingAction === "delete"}
+        onConfirm={proceedWithPendingAction}
+        onCancel={() => {
+          setConfirmOpen(false);
+          setPendingAction(null);
+          setPendingMoment(null);
+        }}
+      />
     </div>
   );
 }
