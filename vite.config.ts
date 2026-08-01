@@ -5,6 +5,7 @@ import {defineConfig} from 'vite';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import eventsHandler from './api/events';
+import syncCalendarHandler from './api/cron/sync-calendar';
 
 dotenv.config({ path: path.resolve(__dirname, '.env.local') });
 
@@ -15,6 +16,14 @@ function eventsApiPlugin() {
       server.middlewares.use('/api/events', (req: any, res: any, next: any) => {
         if (req.method === 'GET') {
           eventsHandler(req, res);
+          return;
+        }
+        next();
+      });
+
+      server.middlewares.use('/api/cron/sync-calendar', (req: any, res: any, next: any) => {
+        if (req.method === 'GET') {
+          syncCalendarHandler(req, res);
           return;
         }
         next();
