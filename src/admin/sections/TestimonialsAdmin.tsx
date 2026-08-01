@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { TESTIMONIALS } from '../../data';
 import { Testimonial } from '../../types';
+import ConfirmModal from '../components/ConfirmModal';
 import { Pencil, Check, X, Save, Plus, Trash2 } from 'lucide-react';
 
 export default function TestimonialsAdmin() {
@@ -9,6 +10,9 @@ export default function TestimonialsAdmin() {
   const [saving, setSaving] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
   const [error, setError] = useState('');
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<'save' | 'delete' | null>(null);
+  const [pendingTestimonial, setPendingTestimonial] = useState<Testimonial | null>(null);
 
   // Form states
   const [editQuote, setEditQuote] = setEditQuoteWrapper('');
@@ -95,6 +99,9 @@ export default function TestimonialsAdmin() {
     }
 
     await saveToServer(updated, id);
+    setConfirmOpen(false);
+    setPendingAction(null);
+    setPendingTestimonial(null);
   };
 
   const handleAddNew = () => {
@@ -111,10 +118,35 @@ export default function TestimonialsAdmin() {
     startEdit(newTestimonial);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this testimonial?')) return;
-    const updated = testimonials.filter(t => t.id !== id);
-    await saveToServer(updated, 'deleted');
+  const requestSaveConfirmation = (id: string) => {
+    if (!quoteInput.trim() || !authorInput.trim()) {
+      setError('Quote and Author are required.');
+      return;
+    }
+    setPendingAction('save');
+    setPendingTestimonial(testimonials.find(t => t.id === id) ?? null);
+    setConfirmOpen(true);
+  };
+
+  const requestDeleteConfirmation = (testimonial: Testimonial) => {
+    setPendingAction('delete');
+    setPendingTestimonial(testimonial);
+    setConfirmOpen(true);
+  };
+
+  const proceedWithPendingAction = async () => {
+    if (!pendingTestimonial) return;
+
+    if (pendingAction === 'delete') {
+      const updated = testimonials.filter(t => t.id !== pendingTestimonial.id);
+      await saveToServer(updated, 'deleted');
+    } else if (pendingAction === 'save') {
+      await handleSave(pendingTestimonial.id);
+    }
+
+    setConfirmOpen(false);
+    setPendingAction(null);
+    setPendingTestimonial(null);
   };
 
   return (
@@ -122,9 +154,6 @@ export default function TestimonialsAdmin() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="font-serif text-3xl font-light italic text-[#1C1B1B]">Testimonials</h2>
-          <p className="font-sans text-sm text-[#5e5e5d] mt-1">
-            Manage what your clients say. Changes are saved directly to <code className="text-[10px] bg-[#F4DCEA] text-[#912A55] px-1.5 py-0.5 rounded">src/data.ts</code>.
-          </p>
         </div>
         <div className="flex items-center gap-3">
           <button 
@@ -189,7 +218,7 @@ export default function TestimonialsAdmin() {
                   
                   <div className="flex items-center justify-between pt-2">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => handleSave(t.id)} disabled={isSaving} className="flex items-center gap-1.5 px-4 py-2 bg-[#912A55] hover:bg-[#B05480] disabled:opacity-50 text-white font-sans text-xs font-medium uppercase tracking-widest rounded-full cursor-pointer">
+                      <button onClick={() => requestSaveConfirmation(t.id)} disabled={isSaving} className="flex items-center gap-1.5 px-4 py-2 bg-[#912A55] hover:bg-[#B05480] disabled:opacity-50 text-white font-sans text-xs font-medium uppercase tracking-widest rounded-full cursor-pointer">
                         {isSaving ? <span className="animate-pulse">Saving…</span> : <><Save className="w-3.5 h-3.5" /> Save</>}
                       </button>
                       <button onClick={() => {
@@ -238,7 +267,7 @@ export default function TestimonialsAdmin() {
                       {isSaved && <span className="flex items-center gap-1 font-sans text-xs text-emerald-600 animate-[fadeIn_0.3s_ease-out]"><Check className="w-3.5 h-3.5" /> Saved</span>}
                     </div>
                     
-                    <button onClick={() => handleDelete(t.id)} className="p-2 text-[#5e5e5d]/60 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors cursor-pointer" title="Delete Testimonial">
+                    <button onClick={() => requestDeleteConfirmation(t)} className="p-2 text-[#5e5e5d]/60 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors cursor-pointer" title="Delete Testimonial">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -254,6 +283,21 @@ export default function TestimonialsAdmin() {
             <p className="font-sans text-sm text-[#5e5e5d]">No testimonials found. Add one to get started!</p>
          </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        title={pendingAction === 'delete' ? 'Delete this testimonial?' : 'Save changes?'}
+        message={pendingAction === 'delete' ? 'Are you sure you want to delete this testimonial?' : 'Are you sure you want to save these changes?'}
+        confirmLabel={pendingAction === 'delete' ? 'Yes, delete' : 'Yes'}
+        cancelLabel="No"
+        destructive={pendingAction === 'delete'}
+        onConfirm={proceedWithPendingAction}
+        onCancel={() => {
+          setConfirmOpen(false);
+          setPendingAction(null);
+          setPendingTestimonial(null);
+        }}
+      />
     </div>
   );
 }

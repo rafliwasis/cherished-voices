@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getHero, saveHero, uploadMedia } from '../../lib/cms';
 import { HERO_BG_IMAGE } from '../../data';
+import ConfirmModal from '../components/ConfirmModal';
 import { Eye, Check, RefreshCw, Upload, Video, X, Image as ImageIcon } from 'lucide-react';
 
 
@@ -135,6 +136,7 @@ export default function HeroAdmin() {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const [posterUrl, setPosterUrl] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
@@ -173,6 +175,11 @@ export default function HeroAdmin() {
       setError(err.message);
     }
     setSaving(false);
+    setConfirmOpen(false);
+  };
+
+  const requestSaveConfirmation = () => {
+    setConfirmOpen(true);
   };
 
   return (
@@ -181,9 +188,6 @@ export default function HeroAdmin() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-serif text-3xl font-light italic text-[#1C1B1B]">Hero Highlight</h2>
-          <p className="font-sans text-sm text-[#5e5e5d] mt-1">
-            Edit the background video, poster image, and caption shown on the public homepage.
-          </p>
         </div>
         <button onClick={fetchActive} className="p-2 text-[#5e5e5d] hover:text-[#912A55] transition-colors cursor-pointer" aria-label="Refresh">
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -240,7 +244,7 @@ export default function HeroAdmin() {
 
           <button
             id="hero-save-btn"
-            onClick={handleSave}
+            onClick={requestSaveConfirmation}
             disabled={saving}
             className="w-full px-6 py-4 bg-[#912A55] hover:bg-[#B05480] disabled:opacity-50 disabled:cursor-not-allowed text-white font-sans text-xs font-medium uppercase tracking-[0.15em] rounded-full transition-all duration-300 shadow-md active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
           >
@@ -291,6 +295,16 @@ export default function HeroAdmin() {
           </p>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        title="Save changes?"
+        message="Are you sure you want to save these hero updates?"
+        confirmLabel="Yes"
+        cancelLabel="No"
+        onConfirm={handleSave}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 }
