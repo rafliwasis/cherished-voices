@@ -1,10 +1,9 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import { GoogleAuth } from 'google-auth-library';
 
-const SHEET_ID = '1-AXrD8khFDU69VcHvjUPd2ViZi5lHrfC5FNskNO3Iio';
-const RANGE = 'Clients Data!A2:H';
+const CALENDAR_ID = 'hello.confess.team@gmail.com';
 
-interface SheetCalendarEvent {
+interface CalendarEventOut {
   id: string;
   date: string; // YYYY-MM-DD
   title: string;
@@ -13,11 +12,11 @@ interface SheetCalendarEvent {
   type: 'past' | 'upcoming';
 }
 
-// Google Sheets stores dates as serial numbers (days since 1899-12-30).
-function serialToIsoDate(serial: number): string {
-  const ms = Date.UTC(1899, 11, 30) + serial * 86400000;
-  const d = new Date(ms);
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+interface GCalEvent {
+  id: string;
+  status?: string;
+  summary?: string;
+  start?: { date?: string; dateTime?: string };
 }
 
 function todayIsoDate(): string {
@@ -25,7 +24,22 @@ function todayIsoDate(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-async function fetchCalendarEventsFromSheet(): Promise<SheetCalendarEvent[]> {
+function extractDate(start: { date?: string; dateTime?: string }): string | null {
+  if (start.date) return start.date; // all-day event, already YYYY-MM-DD
+  if (start.dateTime) return start.dateTime.slice(0, 10);
+  return null;
+}
+
+// Event titles follow the convention "Name — Venue"
+function splitSummary(summary: string): { title: string; location: string } {
+  const parts = summary.split('—').map((p) => p.trim());
+  if (parts.length >= 2) {
+    return { title: parts[0], location: parts.slice(1).join(' — ') };
+  }
+  return { title: summary.trim(), location: '' };
+}
+
+async function fetchCalendarEvents(): Promise<CalendarEventOut[]> {
   const keyJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
   if (!keyJson) {
     throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY is not set');
@@ -33,41 +47,45 @@ async function fetchCalendarEventsFromSheet(): Promise<SheetCalendarEvent[]> {
 
   const auth = new GoogleAuth({
     credentials: JSON.parse(keyJson),
-    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    scopes: ['https://www.googleapis.com/auth/calendar.readonly'],
   });
   const client = await auth.getClient();
 
-  const res = await client.request<{ values?: unknown[][] }>({
-    url: `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(RANGE)}`,
-    params: { valueRenderOption: 'UNFORMATTED_VALUE' },
-  });
-
-  const rows = res.data.values ?? [];
   const today = todayIsoDate();
-  const events: SheetCalendarEvent[] = [];
+  const events: CalendarEventOut[] = [];
+  let pageToken: string | undefined;
 
-  rows.forEach((row, idx) => {
-    const [, date, name, , eventType, , , location] = row;
-    if (typeof name !== 'string' || !name.trim()) return;
-    if (typeof date !== 'number') return; // skips blank/"TBA" rows
-
-    const isoDate = serialToIsoDate(date);
-    events.push({
-      id: `sheet-${idx}`,
-      date: isoDate,
-      title: name.trim(),
-      location: typeof location === 'string' ? location.trim() : '',
-      eventType: typeof eventType === 'string' && eventType.trim() ? eventType.trim() : null,
-      type: isoDate < today ? 'past' : 'upcoming',
+  do {
+    const res = await client.request<{ items?: GCalEvent[]; nextPageToken?: string }>({
+      url: `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events`,
+      params: { singleEvents: true, maxResults: 250, pageToken },
     });
-  });
+
+    for (const item of res.data.items ?? []) {
+      if (item.status === 'cancelled') continue;
+      const date = extractDate(item.start ?? {});
+      if (!date) continue;
+
+      const { title, location } = splitSummary(item.summary ?? 'Untitled Event');
+      events.push({
+        id: item.id,
+        date,
+        title,
+        location,
+        eventType: null,
+        type: date < today ? 'past' : 'upcoming',
+      });
+    }
+
+    pageToken = res.data.nextPageToken;
+  } while (pageToken);
 
   return events;
 }
 
 export default async function handler(_req: IncomingMessage, res: ServerResponse) {
   try {
-    const events = await fetchCalendarEventsFromSheet();
+    const events = await fetchCalendarEvents();
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(events));
