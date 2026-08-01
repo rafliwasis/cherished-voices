@@ -9,6 +9,7 @@ interface GCalEvent {
   id: string;
   status?: string;
   summary?: string;
+  location?: string;
   start?: { date?: string; dateTime?: string };
 }
 
@@ -32,13 +33,19 @@ function extractDate(start: { date?: string; dateTime?: string }): string | null
   return null;
 }
 
-// Event titles follow the convention "Name — Venue"
+// Some event titles follow the convention "Name — Venue" (em dash) when there's
+// no separate Calendar location field set on the event.
 function splitSummary(summary: string): { title: string; location: string } {
   const parts = summary.split('—').map((p) => p.trim());
   if (parts.length >= 2) {
     return { title: parts[0], location: parts.slice(1).join(' — ') };
   }
   return { title: summary.trim(), location: '' };
+}
+
+function resolveTitleAndLocation(item: GCalEvent): { title: string; location: string } {
+  const { title, location } = splitSummary(item.summary ?? 'Untitled Event');
+  return { title, location: item.location?.trim() || location };
 }
 
 async function fetchCalendarEvents(): Promise<CalendarEventRow[]> {
@@ -68,7 +75,7 @@ async function fetchCalendarEvents(): Promise<CalendarEventRow[]> {
       const date = extractDate(item.start ?? {});
       if (!date) continue;
 
-      const { title, location } = splitSummary(item.summary ?? 'Untitled Event');
+      const { title, location } = resolveTitleAndLocation(item);
       events.push({
         gcal_event_id: item.id,
         date,
