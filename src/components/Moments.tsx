@@ -160,7 +160,13 @@ export default function Moments() {
               <X className="w-5 h-5" />
             </button>
 
-            <div className="aspect-[4/3] w-full overflow-hidden bg-black relative animate-[slideIn_0.4s_cubic-bezier(0.4,0,0.2,1)]">
+            <div className={`${
+                selectedMoment.aspect === '3/4' ? 'aspect-[3/4]' :
+                selectedMoment.aspect === '4/5' ? 'aspect-[4/5]' :
+                selectedMoment.aspect === '9/16' ? 'aspect-[9/16]' :
+                selectedMoment.aspect === '2/3' ? 'aspect-[2/3]' :
+                'aspect-square'
+              } w-full overflow-hidden bg-black relative animate-[slideIn_0.4s_cubic-bezier(0.4,0,0.2,1)]`}>
               <div
                 className="w-full h-full bg-contain bg-no-repeat bg-center"
                 style={{ backgroundImage: `url(${selectedMoment.imageUrl})` }}

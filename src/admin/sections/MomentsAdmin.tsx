@@ -141,10 +141,14 @@ export default function MomentsAdmin() {
   };
 
   const cancelEdit = () => {
+    if (editingId?.startsWith("new_")) {
+      setMoments((prev) => prev.filter((m) => m.id !== editingId));
+    }
     setEditingId(null);
     setEditCaption("");
     setEditDescription("");
     setEditImageUrl("");
+    setEditAspect("square");
     setError("");
   };
 
@@ -300,6 +304,7 @@ export default function MomentsAdmin() {
             const isSaved = savedId === m.id;
             const isNew = m.id.startsWith("new_");
             const currentImg = isEditing ? editImageUrl : m.imageUrl;
+            const currentAspect = isEditing ? editAspect : m.aspect;
 
             return (
               <div
@@ -309,7 +314,7 @@ export default function MomentsAdmin() {
                 <div className="flex gap-0">
                   {/* Image thumbnail */}
                   <div
-                    className={`relative flex-shrink-0 w-32 md:w-48 ${aspectClass(m.aspect)} bg-[#e5e2e1]`}
+                    className={`relative flex-shrink-0 w-32 md:w-48 ${aspectClass(currentAspect)} bg-[#e5e2e1]`}
                   >
                     <img
                       src={currentImg}
