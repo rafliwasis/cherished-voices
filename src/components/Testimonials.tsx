@@ -1,22 +1,23 @@
+import { useState, useEffect } from 'react';
 import { Testimonial } from '../types';
-import { TESTIMONIALS } from '../data';
+import { getTestimonials } from '../lib/cms';
 
-function TestimonialCard({ quote, author, avatar }: { quote: string; author: string; avatar?: string }) {
+function TestimonialCard({ quote, name, photoUrl }: { quote: string; name: string; photoUrl?: string }) {
   return (
     <div className="flex-shrink-0 mx-5 w-[300px] md:w-[360px]">
       <div className="message-bubble-received">
         <p className="font-sans text-[13px] md:text-[14px] text-[#1C1820] leading-relaxed mb-3">
           {quote}
         </p>
-        <div className="flex items-center justify-between">
-          <span className="font-sans text-[9px] font-semibold text-[#912A55] uppercase tracking-[0.08em]">
-            {author}
+        <div className="flex items-center justify-between gap-3">
+          <span className="font-sans text-xs font-semibold text-[#912A55] uppercase tracking-[0.08em]">
+            {name}
           </span>
-          {avatar && (
+          {photoUrl && (
             <img
-              src={avatar}
-              alt={author}
-              className="w-7 h-7 md:w-8 md:h-8 rounded-full flex-shrink-0 object-cover"
+              src={photoUrl}
+              alt={name}
+              className="w-11 h-11 md:w-12 md:h-12 rounded-full flex-shrink-0 object-cover border border-[#D9BDD0]/30"
             />
           )}
         </div>
@@ -47,7 +48,7 @@ function MarqueeRow({
   return (
     <div className="relative w-full overflow-hidden">
       <div
-        className="marquee-track flex w-[200%]"
+        className="marquee-track flex w-max min-w-full"
         style={{
           animationName: 'marqueeScroll',
           animationTimingFunction: 'linear',
@@ -59,8 +60,8 @@ function MarqueeRow({
           <TestimonialCard
             key={`${item.id}-${i}`}
             quote={item.quote}
-            author={item.author}
-            avatar={item.avatar}
+            name={item.name}
+            photoUrl={item.photoUrl}
           />
         ))}
       </div>
@@ -69,7 +70,13 @@ function MarqueeRow({
 }
 
 export default function Testimonials() {
-  const [row1, row2] = splitRows(TESTIMONIALS);
+  const [items, setItems] = useState<Testimonial[]>([]);
+
+  useEffect(() => {
+    getTestimonials().then(setItems);
+  }, []);
+
+  const [row1, row2] = splitRows(items);
 
   return (
     <>
