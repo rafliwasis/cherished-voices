@@ -33,8 +33,8 @@ export interface CalendarEvent {
 export interface Testimonial {
   id: string;
   quote: string;
-  author: string;
-  avatar?: string;
+  name: string;
+  photoUrl?: string;
 }
 
 export interface MomentItem {

@@ -1,4 +1,8 @@
+import { getAboutVideoUrl } from '../lib/cms';
+
 export default function AboutUs() {
+  const aboutVideoUrl = getAboutVideoUrl();
+
   return (
     <section className="py-24 md:py-32 bg-[#FAF8F6]" id="about-us">
       <div className="px-6 md:px-16 max-w-[1200px] mx-auto">
@@ -10,7 +14,7 @@ export default function AboutUs() {
               <div className="wedding-tone-overlay rounded-lg" />
               <video
                 className="w-full h-full object-cover wedding-tone"
-                src="/about-video.mp4"
+                src={aboutVideoUrl}
                 autoPlay
                 muted
                 loop

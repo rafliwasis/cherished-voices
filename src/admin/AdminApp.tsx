@@ -3,11 +3,13 @@ import { useNavigate, Routes, Route, NavLink } from 'react-router-dom';
 import HeroAdmin from './sections/HeroAdmin';
 import MomentsAdmin from './sections/MomentsAdmin';
 import TestimonialsAdmin from './sections/TestimonialsAdmin';
+import AboutAdmin from './sections/AboutAdmin';
 import { supabase } from '../lib/supabase';
-import { Image, LayoutTemplate, LogOut, ExternalLink, Menu, X, MessageSquare } from 'lucide-react';
+import { Image, LayoutTemplate, LogOut, ExternalLink, Menu, X, MessageSquare, Film } from 'lucide-react';
 
 const NAV_ITEMS = [
   { to: '/admin', label: 'Hero', icon: LayoutTemplate, end: true },
+  { to: '/admin/about', label: 'About Us', icon: Film, end: false },
   { to: '/admin/moments', label: 'Moments', icon: Image, end: false },
   { to: '/admin/testimonials', label: 'Testimonials', icon: MessageSquare, end: false },
 ];
@@ -150,6 +152,7 @@ const NAV_ITEMS = [
         <main className="flex-1 p-6 md:p-10 max-w-6xl mx-auto w-full">
           <Routes>
             <Route path="/" element={<HeroAdmin />} />
+            <Route path="/about" element={<AboutAdmin />} />
             <Route path="/moments" element={<MomentsAdmin />} />
             <Route path="/testimonials" element={<TestimonialsAdmin />} />
           </Routes>

@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react';
-import { getHero } from '../lib/cms';
-import { HERO_BG_IMAGE } from '../data';
+import { getHeroVideoUrl } from '../lib/cms';
 
 interface HeroProps {
   onCheckAvailability: () => void;
@@ -8,19 +6,10 @@ interface HeroProps {
 }
 
 export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
-  const [heroBg, setHeroBg] = useState<string>(HERO_BG_IMAGE);
-  const [heroVideo, setHeroVideo] = useState<string>('/hero-cherished.mp4');
-  useEffect(() => {
-    getHero().then((hero) => {
-      if (hero) {
-        if (hero.imageUrl) setHeroBg(hero.imageUrl);
-        if (hero.videoUrl) setHeroVideo(hero.videoUrl);
-      }
-    });
-  }, []);
+  const heroVideo = getHeroVideoUrl();
 
   return (
-    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-[#1C1B1B]">
       {/* Background Video with Dark Hero Gradient overlay */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
         <video
@@ -30,7 +19,6 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
           muted
           playsInline
           className="w-full h-full object-cover scale-105 transition-transform duration-[10s] ease-out"
-          poster={heroBg}
         >
           <source src={heroVideo} type="video/mp4" />
         </video>
@@ -54,7 +42,7 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
             onClick={onCheckAvailability}
             className="w-full sm:w-auto px-10 py-4 md:py-5 bg-[#912A55] hover:bg-[#B05480] text-white font-sans text-xs font-medium uppercase tracking-[0.15em] transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer rounded-full"
           >
-            Reserve Your Date
+            Check Availability
           </button>
           <button
             onClick={onContactUs}
