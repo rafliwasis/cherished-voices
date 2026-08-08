@@ -32,7 +32,7 @@ export default function AboutUs() {
               What is Cherished Voices?
             </h2>
             <p className="font-[family-name:--font-body] text-lg md:text-xl text-[#574141] leading-relaxed">
-              For weddings and celebrations too significant for a signature. A living archive of voices preserved in cinematic audio and video, exactly as they happened. Intimate. Unfiltered. Forever. A moment you don't just remember but return to for a lifetime.
+              People who holds a special place in our heart must have their personal thoughts about us. That is where Cherished Voices came in, to make sure all the feelings are expressed through voices, so it can be cherished forever
             </p>
           </div>
 

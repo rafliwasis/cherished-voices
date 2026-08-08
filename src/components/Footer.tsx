@@ -38,7 +38,7 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://wa.me/6281234567890"
+                href="https://wa.me/6287703149549"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-1.5 bg-[#912A55]/30 hover:bg-[#912A55] text-white/80 hover:text-white transition-all rounded-full"
@@ -50,7 +50,7 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://tiktok.com/@cherished___voices"
+                href="https://tiktok.com/@wearecherishedvoices"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-1.5 bg-[#912A55]/30 hover:bg-[#912A55] text-white/80 hover:text-white transition-all rounded-full"
