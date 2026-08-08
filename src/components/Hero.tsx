@@ -32,9 +32,11 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
           Every Voice, Forever Cherished
         </h1>
         
-        <p className="font-[family-name:--font-body] text-lg md:text-xl text-white/85 max-w-2xl mx-auto leading-relaxed mb-10">
-          A premium audio & video guestbook service for weddings and celebrations — where every message becomes a timeless recording, not just a signature.
-        </p>
+      <p className="font-[family-name:--font-body] text-lg md:text-xl text-white/85 max-w-3xl mx-auto leading-relaxed mb-10">
+        A premium audio & video guestbook service for weddings and any kind of celebrations :-)
+        <br />
+        We're here to keep heartfelt messages from your loved ones!
+      </p>
 
         {/* Call to Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
