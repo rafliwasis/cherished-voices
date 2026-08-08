@@ -160,10 +160,6 @@ export default function MomentsAdmin() {
     switch (aspect) {
       case "9/16":
         return "aspect-[9/16]";
-      case "2/3":
-        return "aspect-[2/3]";
-      case "3/4":
-        return "aspect-[3/4]";
       case "4/5":
         return "aspect-[4/5]";
       default:
@@ -276,7 +272,7 @@ export default function MomentsAdmin() {
                           </label>
                           <div className="flex items-center gap-2">
                             {(
-                              ["square", "4/5", "3/4", "2/3", "9/16"] as const
+                              ["square", "4/5", "9/16"] as const
                             ).map((ratio) => (
                               <button
                                 key={ratio}
