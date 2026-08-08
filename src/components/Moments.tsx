@@ -4,15 +4,55 @@ import { getMoments } from '../lib/cms';
 import { MOMENT_ITEMS } from '../data';
 import { MomentItem } from '../types';
 
+const getAspectClass = (aspect?: string) => {
+  switch (aspect) {
+    case '4/5':
+      return 'aspect-[4/5]';
+    case '9/16':
+      return 'aspect-[9/16]';
+    case 'square':
+    default:
+      return 'aspect-square';
+  }
+};
+
 export default function Moments() {
   const [items, setItems] = useState<MomentItem[]>([]);
   const [selectedMomentIndex, setSelectedMomentIndex] = useState<number | null>(null);
 
+  const loadMoments = async () => {
+    try {
+      const rows = await getMoments();
+      setItems(rows.length > 0 ? rows : MOMENT_ITEMS);
+    } catch (error) {
+      console.error('Failed to load moments', error);
+      setItems(MOMENT_ITEMS);
+    }
+  };
+
   // Fall back to static data if the DB has no rows yet
   useEffect(() => {
-    getMoments().then((rows) => {
-      setItems(rows.length > 0 ? rows : MOMENT_ITEMS);
-    });
+    void loadMoments();
+  }, []);
+
+  useEffect(() => {
+    const refreshOnFocus = () => {
+      void loadMoments();
+    };
+
+    const refreshOnVisibilityChange = () => {
+      if (!document.hidden) {
+        void loadMoments();
+      }
+    };
+
+    window.addEventListener('focus', refreshOnFocus);
+    document.addEventListener('visibilitychange', refreshOnVisibilityChange);
+
+    return () => {
+      window.removeEventListener('focus', refreshOnFocus);
+      document.removeEventListener('visibilitychange', refreshOnVisibilityChange);
+    };
   }, []);
 
   const scrollStripRef = useRef<HTMLDivElement>(null);
@@ -75,21 +115,10 @@ export default function Moments() {
         {/* Horizontal Scroll Strip */}
         <div ref={scrollStripRef} className="flex overflow-x-auto gap-6 pb-4 snap-x snap-mandatory scrollbar-hide">
           {items.map((item, idx) => {
-            const aspectClass = 
-              item.aspect === '3/4' ? 'aspect-[3/4]' :
-              item.aspect === '4/5' ? 'aspect-[4/5]' :
-              item.aspect === '9/16' ? 'aspect-[9/16]' :
-              item.aspect === '2/3' ? 'aspect-[2/3]' :
-              'aspect-square';
+            const aspectClass = getAspectClass(item.aspect);
 
             const widths = [300, 380, 320, 420, 340, 360];
-            const itemWidth = idx < widths.length 
-              ? widths[idx] 
-              : item.aspect === 'square' ? 360 : 
-                item.aspect === '4/5' ? 340 : 
-                item.aspect === '3/4' ? 320 :
-                item.aspect === '2/3' ? 300 :
-                item.aspect === '9/16' ? 280 : 340;
+            const itemWidth = widths[idx] ?? 340;
 
             return (
               <div
@@ -160,13 +189,9 @@ export default function Moments() {
               <X className="w-5 h-5" />
             </button>
 
-            <div className={`${
-                selectedMoment.aspect === '3/4' ? 'aspect-[3/4]' :
-                selectedMoment.aspect === '4/5' ? 'aspect-[4/5]' :
-                selectedMoment.aspect === '9/16' ? 'aspect-[9/16]' :
-                selectedMoment.aspect === '2/3' ? 'aspect-[2/3]' :
-                'aspect-square'
-              } w-full overflow-hidden bg-black relative animate-[slideIn_0.4s_cubic-bezier(0.4,0,0.2,1)]`}>
+            <div
+                className={`${getAspectClass(selectedMoment.aspect)} w-full overflow-hidden bg-black relative animate-[slideIn_0.4s_cubic-bezier(0.4,0,0.2,1)]`}
+              >
               <div
                 className="w-full h-full bg-contain bg-no-repeat bg-center"
                 style={{ backgroundImage: `url(${selectedMoment.imageUrl})` }}

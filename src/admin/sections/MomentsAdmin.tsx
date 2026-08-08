@@ -158,10 +158,10 @@ export default function MomentsAdmin() {
 
   const aspectClass = (aspect: string) => {
     switch (aspect) {
-      case "9/16":
-        return "aspect-[9/16]";
       case "4/5":
         return "aspect-[4/5]";
+      case "9/16":
+        return "aspect-[9/16]";
       default:
         return "aspect-square";
     }
@@ -271,9 +271,7 @@ export default function MomentsAdmin() {
                             Aspect Ratio
                           </label>
                           <div className="flex items-center gap-2">
-                            {(
-                              ["square", "4/5", "9/16"] as const
-                            ).map((ratio) => (
+                            {(["square", "4/5", "9/16"] as const).map((ratio) => (
                               <button
                                 key={ratio}
                                 onClick={() => setEditAspect(ratio)}
