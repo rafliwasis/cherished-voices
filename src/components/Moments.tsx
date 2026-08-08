@@ -151,7 +151,7 @@ export default function Moments() {
 
       {selectedMoment && (
         <div 
-          className="fixed inset-0 z-[100] modal-backdrop flex items-center justify-center p-4"
+          className="fixed inset-0 z-[100] modal-backdrop flex items-center justify-center p-3 sm:p-4"
           onClick={() => setSelectedMomentIndex(null)}
         >
           <button
@@ -159,10 +159,10 @@ export default function Moments() {
               e.stopPropagation();
               handlePrev();
             }}
-            className="fixed left-8 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-[#912A55] p-3 rounded-full z-[110] transition-all duration-300 hover:scale-110 shadow-xl cursor-pointer backdrop-blur-sm"
+            className="fixed left-3 sm:left-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-[#912A55] p-2.5 sm:p-3 rounded-full z-[110] transition-all duration-300 hover:scale-110 shadow-xl cursor-pointer backdrop-blur-sm"
             aria-label="Previous Moment"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
 
           <button
@@ -170,23 +170,23 @@ export default function Moments() {
               e.stopPropagation();
               handleNext();
             }}
-            className="fixed right-8 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-[#912A55] p-3 rounded-full z-[110] transition-all duration-300 hover:scale-110 shadow-xl cursor-pointer backdrop-blur-sm"
+            className="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-[#912A55] p-2.5 sm:p-3 rounded-full z-[110] transition-all duration-300 hover:scale-110 shadow-xl cursor-pointer backdrop-blur-sm"
             aria-label="Next Moment"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
 
           <div 
             key={selectedMomentIndex}
-            className="bg-[#F4DCEA]/90 max-w-2xl w-full rounded-2xl shadow-2xl overflow-hidden relative border border-[#D9BDD0]/40 animate-[fadeIn_0.4s_ease-out]"
+            className="bg-[#F4DCEA]/90 w-full max-w-[540px] sm:max-w-[480px] md:max-w-[520px] rounded-2xl shadow-2xl overflow-hidden relative border border-[#D9BDD0]/40 animate-[fadeIn_0.4s_ease-out]"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setSelectedMomentIndex(null)}
-              className="absolute top-4 right-4 bg-[#912A55]/60 hover:bg-[#912A55]/80 text-white p-2 rounded-full z-20 transition-all cursor-pointer"
+              className="absolute top-3 right-3 bg-[#912A55]/60 hover:bg-[#912A55]/80 text-white p-2 rounded-full z-20 transition-all cursor-pointer"
               aria-label="Close Preview"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
 
             <div
@@ -198,14 +198,14 @@ export default function Moments() {
               />
             </div>
 
-            <div className="p-6 md:p-8 space-y-3">
+            <div className="p-4 sm:p-5 md:p-6 space-y-2.5">
               <span className="font-sans text-[10px] font-semibold text-[#912A55] uppercase tracking-widest block">
                 Cherished Moments
               </span>
-              <h3 className="font-serif text-2xl font-light italic text-[#1c1b1b]">
+              <h3 className="font-serif text-xl sm:text-2xl font-light italic text-[#1c1b1b]">
                 {selectedMoment.caption}
               </h3>
-              <p className="font-[family-name:--font-body] text-base text-[#5e5e5d] leading-relaxed">
+              <p className="font-[family-name:--font-body] text-sm sm:text-base text-[#5e5e5d] leading-relaxed">
                 {selectedMoment.description ?? 'A pristine, tangible record of the laughter, words of wisdom, and raw emotion shared at this premium celebration.'}
               </p>
             </div>
