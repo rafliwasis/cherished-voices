@@ -139,9 +139,11 @@ export default function Moments() {
                 </div>
 
                 {/* Image Asset */}
-                <div
-                  className="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105 rounded-lg wedding-tone"
-                  style={{ backgroundImage: `url(${item.imageUrl})` }}
+                <img
+                  src={item.imageUrl}
+                  alt={item.caption || "Cherished Moment"}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 rounded-lg wedding-tone"
                 />
               </div>
             );
