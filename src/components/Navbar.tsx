@@ -146,7 +146,7 @@ export default function Navbar() {
         <div className="absolute bottom-8 left-8 right-8 text-[#5e5e5d] text-xs space-y-4">
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-[#912A55]" />
-            <span>089178875</span>
+            <span>087703149549</span>
           </div>
           <div className="flex items-center gap-2">
             <Instagram className="w-4 h-4 text-[#912A55]" />

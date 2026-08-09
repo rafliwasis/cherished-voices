@@ -53,10 +53,14 @@ export default function MomentsAdmin() {
   };
 
   const cancelEdit = () => {
+    if (editingId?.startsWith("new_")) {
+      setMoments((prev) => prev.filter((m) => m.id !== editingId));
+    }
     setEditingId(null);
     setEditCaption("");
     setEditDescription("");
     setEditImageUrl("");
+    setEditAspect("square");
     setError("");
   };
 
@@ -154,14 +158,10 @@ export default function MomentsAdmin() {
 
   const aspectClass = (aspect: string) => {
     switch (aspect) {
-      case "9/16":
-        return "aspect-[9/16]";
-      case "2/3":
-        return "aspect-[2/3]";
-      case "3/4":
-        return "aspect-[3/4]";
       case "4/5":
         return "aspect-[4/5]";
+      case "9/16":
+        return "aspect-[9/16]";
       default:
         return "aspect-square";
     }
@@ -212,6 +212,7 @@ export default function MomentsAdmin() {
             const isSaved = savedId === m.id;
             const isNew = m.id.startsWith("new_");
             const currentImg = isEditing ? editImageUrl : m.imageUrl;
+            const currentAspect = isEditing ? editAspect : m.aspect;
 
             return (
               <div
@@ -221,7 +222,7 @@ export default function MomentsAdmin() {
                 <div className="flex gap-0">
                   {/* Image thumbnail */}
                   <div
-                    className={`relative flex-shrink-0 w-32 md:w-48 ${aspectClass(m.aspect)} bg-[#e5e2e1]`}
+                    className={`relative flex-shrink-0 w-32 md:w-48 ${aspectClass(currentAspect)} bg-[#e5e2e1]`}
                   >
                     <img
                       src={currentImg}
@@ -270,9 +271,7 @@ export default function MomentsAdmin() {
                             Aspect Ratio
                           </label>
                           <div className="flex items-center gap-2">
-                            {(
-                              ["square", "4/5", "3/4", "2/3", "9/16"] as const
-                            ).map((ratio) => (
+                            {(["square", "4/5", "9/16"] as const).map((ratio) => (
                               <button
                                 key={ratio}
                                 onClick={() => setEditAspect(ratio)}
