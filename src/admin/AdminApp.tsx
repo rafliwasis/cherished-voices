@@ -4,14 +4,16 @@ import HeroAdmin from './sections/HeroAdmin';
 import MomentsAdmin from './sections/MomentsAdmin';
 import TestimonialsAdmin from './sections/TestimonialsAdmin';
 import AboutAdmin from './sections/AboutAdmin';
+import EventsAdmin from './sections/EventsAdmin';
 import { supabase } from '../lib/supabase';
-import { Image, LayoutTemplate, LogOut, ExternalLink, Menu, X, MessageSquare, Film } from 'lucide-react';
+import { Image, LayoutTemplate, LogOut, ExternalLink, Menu, X, MessageSquare, Film, CalendarDays } from 'lucide-react';
 
 const NAV_ITEMS = [
   { to: '/admin', label: 'Hero', icon: LayoutTemplate, end: true },
   { to: '/admin/about', label: 'About Us', icon: Film, end: false },
   { to: '/admin/moments', label: 'Moments', icon: Image, end: false },
   { to: '/admin/testimonials', label: 'Testimonials', icon: MessageSquare, end: false },
+  { to: '/admin/events', label: 'Events', icon: CalendarDays, end: false },
 ];
 
   export default function AdminApp() {
@@ -40,6 +42,33 @@ const NAV_ITEMS = [
       await supabase.auth.signOut();
       navigate('/admin/login');
     };
+
+    // 30-minute inactivity timeout
+    useEffect(() => {
+      let inactivityTimer: ReturnType<typeof setTimeout>;
+
+      const resetTimer = () => {
+        clearTimeout(inactivityTimer);
+        // 30 minutes in milliseconds
+        inactivityTimer = setTimeout(() => {
+          supabase.auth.signOut().then(() => navigate('/admin/login'));
+        }, 30 * 60 * 1000);
+      };
+
+      resetTimer();
+
+      const activityEvents = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
+      activityEvents.forEach((event) => {
+        window.addEventListener(event, resetTimer, true);
+      });
+
+      return () => {
+        clearTimeout(inactivityTimer);
+        activityEvents.forEach((event) => {
+          window.removeEventListener(event, resetTimer, true);
+        });
+      };
+    }, [navigate]);
 
   if (authLoading) {
     return (
@@ -155,6 +184,7 @@ const NAV_ITEMS = [
             <Route path="/about" element={<AboutAdmin />} />
             <Route path="/moments" element={<MomentsAdmin />} />
             <Route path="/testimonials" element={<TestimonialsAdmin />} />
+            <Route path="/events" element={<EventsAdmin />} />
           </Routes>
         </main>
       </div>

@@ -3,10 +3,15 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import eventsHandler from './api/events';
 import syncCalendarHandler from './api/cron/sync-calendar';
 
-dotenv.config({ path: path.resolve(__dirname, '.env.local') });
+if (fs.existsSync(path.resolve(__dirname, '.env.local'))) {
+  dotenv.config({ path: path.resolve(__dirname, '.env.local') });
+} else {
+  dotenv.config({ path: path.resolve(__dirname, '.env') });
+}
 
 function eventsApiPlugin() {
   return {
