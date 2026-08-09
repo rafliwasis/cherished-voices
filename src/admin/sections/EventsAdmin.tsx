@@ -269,7 +269,7 @@ export default function EventsAdmin() {
           />
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
           {/* Filter */}
           <div className="relative flex items-center">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">

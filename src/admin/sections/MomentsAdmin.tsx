@@ -219,10 +219,10 @@ export default function MomentsAdmin() {
                 key={m.id}
                 className={`bg-white border rounded-2xl overflow-hidden shadow-sm transition-all duration-200 ${isEditing ? "border-[#912A55]/30 shadow-md" : "border-[#D9BDD0]/30"}`}
               >
-                <div className="flex gap-0">
+                <div className="flex flex-col sm:flex-row gap-0">
                   {/* Image thumbnail */}
                   <div
-                    className={`relative flex-shrink-0 w-32 md:w-48 ${aspectClass(currentAspect)} bg-[#e5e2e1]`}
+                    className={`relative flex-shrink-0 w-full sm:w-32 md:w-48 ${aspectClass(currentAspect)} bg-[#e5e2e1]`}
                   >
                     <img
                       src={currentImg}
@@ -286,7 +286,7 @@ export default function MomentsAdmin() {
                             ))}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 pt-1">
+                        <div className="flex flex-wrap items-center gap-2 pt-1">
                           <button
                             onClick={() => handleSaveClick(m)}
                             disabled={isSaving}
@@ -333,7 +333,7 @@ export default function MomentsAdmin() {
                             )}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="flex flex-wrap items-center gap-2 mt-2">
                           <button
                             onClick={() => startEdit(m)}
                             className="flex items-center gap-1.5 px-4 py-2 border border-[#D9BDD0]/50 hover:border-[#912A55]/40 text-[#5e5e5d] hover:text-[#912A55] font-sans text-xs font-medium uppercase tracking-widest rounded-full cursor-pointer"
