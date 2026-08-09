@@ -12,6 +12,8 @@ import {
   X,
   RefreshCw,
   Save,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 import ConfirmModal from "../components/ConfirmModal";
 import ImageUploader from "../components/ImageUploader";
@@ -104,7 +106,7 @@ export default function MomentsAdmin() {
     setMoments((prev) => [
       {
         id: newId,
-        imageUrl: "/images/cv_placeholder.jpg",
+        imageUrl: "",
         caption: "",
         description: "",
         aspect: "square",
@@ -116,7 +118,7 @@ export default function MomentsAdmin() {
     setEditingId(newId);
     setEditCaption("");
     setEditDescription("");
-    setEditImageUrl("/images/cv_placeholder.jpg");
+    setEditImageUrl("");
     setEditAspect("square");
     setError("");
   };
@@ -156,6 +158,52 @@ export default function MomentsAdmin() {
     setPendingMoment(null);
   };
 
+  const moveMoment = async (index: number, direction: 'up' | 'down') => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === moments.length - 1) return;
+
+    const newMoments = [...moments];
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+
+    // Swap elements
+    [newMoments[index], newMoments[targetIndex]] = [newMoments[targetIndex], newMoments[index]];
+    
+    // Update sortOrder for all elements
+    const updatedMoments = newMoments.map((m, idx) => ({ ...m, sortOrder: idx }));
+
+    setMoments(updatedMoments); // Optimistic update
+
+    try {
+      const m1 = updatedMoments[index];
+      const m2 = updatedMoments[targetIndex];
+      
+      if (!m1.id.startsWith("new_")) {
+        await saveMoment({
+          id: m1.id,
+          imageUrl: m1.imageUrl,
+          caption: m1.caption,
+          description: m1.description || "",
+          aspect: m1.aspect,
+          sortOrder: m1.sortOrder,
+        });
+      }
+      
+      if (!m2.id.startsWith("new_")) {
+        await saveMoment({
+          id: m2.id,
+          imageUrl: m2.imageUrl,
+          caption: m2.caption,
+          description: m2.description || "",
+          aspect: m2.aspect,
+          sortOrder: m2.sortOrder,
+        });
+      }
+    } catch (err: any) {
+      setError("Failed to reorder: " + err.message);
+      fetchMoments(); // Revert on error
+    }
+  };
+
   const aspectClass = (aspect: string) => {
     switch (aspect) {
       case "4/5":
@@ -169,13 +217,16 @@ export default function MomentsAdmin() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D9BDD0]/30 pb-4">
         <div>
           <h2 className="font-serif text-3xl font-light italic text-[#1C1B1B]">
             Moments Gallery
           </h2>
+          <p className="font-sans text-xs text-[#5e5e5d] mt-1">
+            The moment at the top of this list will appear as the first (leftmost) image in the public gallery.
+          </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={handleAddNew}
             className="flex items-center gap-1.5 px-4 py-2 bg-[#912A55] hover:bg-[#B05480] text-white font-sans text-xs font-medium uppercase tracking-widest rounded-full transition-colors cursor-pointer shadow-sm"
@@ -206,7 +257,7 @@ export default function MomentsAdmin() {
         </div>
       ) : (
         <div className="space-y-4">
-          {moments.map((m) => {
+          {moments.map((m, idx) => {
             const isEditing = editingId === m.id;
             const isSaving = savingId === m.id;
             const isSaved = savedId === m.id;
@@ -224,11 +275,17 @@ export default function MomentsAdmin() {
                   <div
                     className={`relative flex-shrink-0 w-full sm:w-32 md:w-48 ${aspectClass(currentAspect)} bg-[#e5e2e1]`}
                   >
-                    <img
-                      src={currentImg}
-                      alt={m.caption}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
+                    {currentImg ? (
+                      <img
+                        src={currentImg}
+                        alt={m.caption}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-[#FCF9F8] text-[#912A55]/40 border border-[#D9BDD0]/40">
+                        <span className="font-sans text-[9px] font-bold uppercase tracking-widest px-2 text-center">No Photo</span>
+                      </div>
+                    )}
 
                     {isEditing && (
                       <ImageUploader
@@ -319,9 +376,16 @@ export default function MomentsAdmin() {
                     ) : (
                       <div className="flex flex-col justify-between h-full gap-3">
                         <div className="space-y-2">
-                          <span className="font-sans text-[9px] font-semibold text-[#912A55] uppercase tracking-widest">
-                            Cherished Archive
-                          </span>
+                          <div className="flex items-center justify-between">
+                            <span className="font-sans text-[9px] font-semibold text-[#912A55] uppercase tracking-widest">
+                              Cherished Archive
+                            </span>
+                            {idx === 0 && (
+                              <span className="bg-[#912A55] text-white px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest shadow-sm">
+                                First in Gallery
+                              </span>
+                            )}
+                          </div>
                           <h3 className="font-serif text-lg md:text-xl font-light italic text-[#1c1b1b] leading-snug">
                             {m.caption}
                           </h3>
@@ -350,6 +414,27 @@ export default function MomentsAdmin() {
                             <span className="flex items-center gap-1 font-sans text-xs text-emerald-600 animate-[fadeIn_0.3s_ease-out]">
                               <Check className="w-3.5 h-3.5" /> Saved
                             </span>
+                          )}
+                          {!isNew && (
+                            <div className="ml-auto flex items-center gap-1 border border-[#D9BDD0]/30 rounded-full p-1">
+                              <button
+                                onClick={() => moveMoment(idx, 'up')}
+                                disabled={idx === 0}
+                                className="p-1.5 text-[#5e5e5d] hover:text-[#912A55] disabled:opacity-30 disabled:hover:text-[#5e5e5d] rounded-full transition-colors cursor-pointer"
+                                title="Move Up"
+                              >
+                                <ArrowUp className="w-3.5 h-3.5" />
+                              </button>
+                              <div className="w-[1px] h-3 bg-[#D9BDD0]/50" />
+                              <button
+                                onClick={() => moveMoment(idx, 'down')}
+                                disabled={idx === moments.length - 1}
+                                className="p-1.5 text-[#5e5e5d] hover:text-[#912A55] disabled:opacity-30 disabled:hover:text-[#5e5e5d] rounded-full transition-colors cursor-pointer"
+                                title="Move Down"
+                              >
+                                <ArrowDown className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
                           )}
                         </div>
                       </div>
