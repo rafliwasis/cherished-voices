@@ -191,12 +191,11 @@ export default function Moments() {
               <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
 
-            <div
-                className={`${getAspectClass(selectedMoment.aspect)} w-full overflow-hidden bg-black relative animate-[slideIn_0.4s_cubic-bezier(0.4,0,0.2,1)]`}
-              >
-              <div
-                className="w-full h-full bg-contain bg-no-repeat bg-center"
-                style={{ backgroundImage: `url(${selectedMoment.imageUrl})` }}
+            <div className="aspect-square w-full overflow-hidden bg-black relative animate-[slideIn_0.4s_cubic-bezier(0.4,0,0.2,1)]">
+              <img
+                src={selectedMoment.imageUrl}
+                alt={selectedMoment.caption || 'Cherished Moment'}
+                className="w-full h-full object-cover"
               />
             </div>
 
