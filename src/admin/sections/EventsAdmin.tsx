@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { supabase } from "../../lib/supabase";
 import { CalendarEvent } from "../../types";
 import { RefreshCw, MapPin, Search, Filter, ArrowUpDown, Upload, X } from "lucide-react";
+import imageCompression from 'browser-image-compression';
 
 export default function EventsAdmin() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -12,7 +13,8 @@ export default function EventsAdmin() {
   const [filterType, setFilterType] = useState<"all" | "upcoming" | "past">(
     "all",
   );
-  const [filterDate, setFilterDate] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [mediaModalEventId, setMediaModalEventId] = useState<string | null>(null);
@@ -61,7 +63,7 @@ export default function EventsAdmin() {
       const newUrls: string[] = [];
 
       for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+        let file = files[i];
         const fileExt = file.name.split('.').pop() || '';
 
         // Prevent multiple videos
@@ -70,6 +72,15 @@ export default function EventsAdmin() {
           if (hasVideo) {
             setError("You can only upload a maximum of 1 video per event.");
             continue;
+          }
+        }
+
+        if (file.type.startsWith('image/')) {
+          try {
+            const options = { maxSizeMB: 0.8, maxWidthOrHeight: 1920, useWebWorker: true };
+            file = await imageCompression(file, options);
+          } catch (error) {
+            console.warn("Compression failed", error);
           }
         }
 
@@ -146,10 +157,12 @@ export default function EventsAdmin() {
       .filter((e) => e.title.toLowerCase().includes(searchQuery.toLowerCase()))
       .filter((e) => (filterType === "all" ? true : e.type === filterType))
       .filter((e) => {
-        if (!filterDate) return true;
+        if (!startDate && !endDate) return true;
         try {
           const eventDateStr = new Date(e.date).toISOString().split("T")[0];
-          return eventDateStr === filterDate;
+          if (startDate && eventDateStr < startDate) return false;
+          if (endDate && eventDateStr > endDate) return false;
+          return true;
         } catch {
           return true; // fallback if date is invalid
         }
@@ -159,7 +172,7 @@ export default function EventsAdmin() {
         const dateB = new Date(b.date).getTime();
         return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
       });
-  }, [events, searchQuery, filterType, filterDate, sortOrder]);
+  }, [events, searchQuery, filterType, startDate, endDate, sortOrder]);
 
   const todayStr = new Date().toISOString().split("T")[0];
   const lastWeekDate = new Date();
@@ -286,21 +299,59 @@ export default function EventsAdmin() {
             </select>
           </div>
 
-          {/* Date Filter */}
-          <div className="relative flex items-center">
+          {/* Date Range Filter */}
+          <div className="flex items-center gap-2 border border-[#D9BDD0]/50 rounded-lg bg-[#FCF9F8] pr-2 transition-all focus-within:border-[#912A55] focus-within:ring-1 focus-within:ring-[#912A55]">
             <input
               type="date"
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-              className="px-4 py-2 border border-[#D9BDD0]/50 rounded-lg bg-[#FCF9F8] font-sans text-sm text-[#5e5e5d] focus:outline-none focus:border-[#912A55] focus:ring-1 focus:ring-[#912A55] transition-all cursor-pointer min-w-[140px]"
+              value={startDate}
+              max={endDate || undefined}
+              onChange={(e) => {
+                const val = e.target.value;
+                setStartDate(val);
+                if (val && endDate) {
+                  const [y, m, d] = val.split('-');
+                  const maxEnd = new Date(Number(y), Number(m), Number(d));
+                  const maxEndStr = `${maxEnd.getFullYear()}-${String(maxEnd.getMonth() + 1).padStart(2, '0')}-${String(maxEnd.getDate()).padStart(2, '0')}`;
+                  if (endDate > maxEndStr) {
+                    setEndDate(maxEndStr);
+                  }
+                }
+              }}
+              className="pl-3 py-2 bg-transparent font-sans text-sm text-[#5e5e5d] focus:outline-none cursor-pointer rounded-l-lg"
+              title="Start Date"
             />
-            {filterDate && (
+            <span className="text-[#D9BDD0] font-sans text-[10px] uppercase font-semibold">To</span>
+            <input
+              type="date"
+              value={endDate}
+              min={startDate || undefined}
+              max={startDate ? (() => {
+                const [y, m, d] = startDate.split('-');
+                const dObj = new Date(Number(y), Number(m), Number(d));
+                return `${dObj.getFullYear()}-${String(dObj.getMonth() + 1).padStart(2, '0')}-${String(dObj.getDate()).padStart(2, '0')}`;
+              })() : undefined}
+              onChange={(e) => {
+                const val = e.target.value;
+                setEndDate(val);
+                if (val && startDate) {
+                  const [y, m, d] = val.split('-');
+                  const minStart = new Date(Number(y), Number(m) - 2, Number(d));
+                  const minStartStr = `${minStart.getFullYear()}-${String(minStart.getMonth() + 1).padStart(2, '0')}-${String(minStart.getDate()).padStart(2, '0')}`;
+                  if (startDate < minStartStr) {
+                    setStartDate(minStartStr);
+                  }
+                }
+              }}
+              className="py-2 bg-transparent font-sans text-sm text-[#5e5e5d] focus:outline-none cursor-pointer"
+              title="End Date (Max 1 month from start)"
+            />
+            {(startDate || endDate) && (
               <button
-                onClick={() => setFilterDate("")}
-                className="absolute right-8 top-1/2 -translate-y-1/2 text-[#D9BDD0] hover:text-[#912A55] p-1 bg-[#FCF9F8]"
+                onClick={() => { setStartDate(""); setEndDate(""); }}
+                className="text-[#D9BDD0] hover:text-[#912A55] p-1 ml-1 transition-colors"
                 title="Clear date filter"
               >
-                &times;
+                <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
@@ -344,9 +395,14 @@ export default function EventsAdmin() {
             <>
               {thisWeekEvents.length > 0 && (
                 <div className="space-y-4">
-                  <h3 className="font-serif text-2xl text-[#1c1b1b] border-b border-[#D9BDD0]/30 pb-2">
-                    Past 7 Days
-                  </h3>
+                  <div className="border-b border-[#D9BDD0]/30 pb-2">
+                    <h3 className="font-serif text-2xl text-[#1c1b1b]">
+                      Past 7 Days
+                    </h3>
+                    <p className="font-sans text-xs text-[#5e5e5d] mt-1">
+                      Events from the last 7 days will be prioritized and shown first on the public viewer.
+                    </p>
+                  </div>
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {thisWeekEvents.map(renderEventCard)}
                   </div>
@@ -356,9 +412,14 @@ export default function EventsAdmin() {
               {otherEvents.length > 0 && (
                 <div className="space-y-4">
                   {thisWeekEvents.length > 0 && (
-                    <h3 className="font-serif text-2xl text-[#1c1b1b] border-b border-[#D9BDD0]/30 pb-2">
-                      All Other Events
-                    </h3>
+                    <div className="border-b border-[#D9BDD0]/30 pb-2">
+                      <h3 className="font-serif text-2xl text-[#1c1b1b]">
+                        All Other Events
+                      </h3>
+                      <p className="font-sans text-xs text-[#5e5e5d] mt-1">
+                        Older or upcoming events that appear after the recent highlights.
+                      </p>
+                    </div>
                   )}
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {otherEvents.map(renderEventCard)}

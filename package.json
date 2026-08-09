@@ -16,6 +16,7 @@
     "@tailwindcss/vite": "^4.1.14",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^5.0.4",
+    "browser-image-compression": "^2.0.2",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "google-auth-library": "^10.9.0",

@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { Image as ImageIcon } from 'lucide-react';
 import { uploadMedia } from '../../lib/cms';
+import imageCompression from 'browser-image-compression';
 
 export default function ImageUploader({
   bucket,
@@ -24,11 +25,24 @@ export default function ImageUploader({
       }
       setError('');
       setUploading(true);
-      const ext = file.name.split('.').pop();
+      
+      let finalFile = file;
+      try {
+        const options = {
+          maxSizeMB: 0.8,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+        };
+        finalFile = await imageCompression(file, options);
+      } catch (error) {
+        console.warn("Compression failed, using original file", error);
+      }
+
+      const ext = finalFile.name.split('.').pop() || 'jpg';
       const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
       try {
-        const url = await uploadMedia(bucket, path, file);
+        const url = await uploadMedia(bucket, path, finalFile);
         onUploaded(url);
       } catch (err: any) {
         setError(err.message);
