@@ -30,7 +30,7 @@ export default function CalendarSection({
   useEffect(() => {
     fetch('/api/events')
       .then((res) => res.json())
-      .then((data: Array<{ id: string; date: string; title: string; location: string; type: CalendarEvent['type'] }>) => {
+      .then((data: Array<{ id: string; date: string; title: string; location: string; type: CalendarEvent['type']; media_urls?: string[] }>) => {
         setEvents(
           data.map((row) => ({
             id: row.id,
@@ -38,6 +38,7 @@ export default function CalendarSection({
             title: row.title,
             location: row.location,
             type: row.type,
+            media_urls: row.media_urls,
           }))
         );
       })

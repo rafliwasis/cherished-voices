@@ -91,3 +91,10 @@
   }
 }
 
+/* Ensure videos show in their native aspect ratio when in fullscreen */
+video:fullscreen {
+  object-fit: contain !important;
+}
+video:-webkit-full-screen {
+  object-fit: contain !important;
+}

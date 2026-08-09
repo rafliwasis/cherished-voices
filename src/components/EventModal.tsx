@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback } from 'react';
-import { X, MapPin, Camera, Play, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, MapPin, Camera, Play, Sparkles, ChevronLeft, ChevronRight, Maximize } from 'lucide-react';
 import { CalendarEvent } from '../types';
 
 const WHATSAPP_NUMBER = '6281234567890';
@@ -163,8 +163,23 @@ export default function EventModal({ events, selectedDate, onClose }: EventModal
                           {evt.title}
                         </h4>
                         <div className="flex items-center gap-1.5 text-xs text-[#574141] font-sans">
-                          <MapPin className="w-3.5 h-3.5 text-[#8b1a2b]" />
-                          <span>{evt.location}</span>
+                          <MapPin className="w-3.5 h-3.5 shrink-0 text-[#8b1a2b]" />
+                          {evt.location ? (
+                            evt.location.match(/^https?:\/\//i) ? (
+                              <a 
+                                href={evt.location} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="hover:text-[#912A55] hover:underline underline-offset-2 transition-colors truncate"
+                              >
+                                Event Location
+                              </a>
+                            ) : (
+                              <span className="truncate">{evt.location}</span>
+                            )
+                          ) : (
+                            <span className="italic opacity-70">Location to be announced</span>
+                          )}
                         </div>
                       </div>
 
@@ -174,9 +189,52 @@ export default function EventModal({ events, selectedDate, onClose }: EventModal
                           Video Highlights
                         </span>
 
-                        {hasHighlights ? (
+                        {evt.media_urls && evt.media_urls.length > 0 ? (
+                          <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-2 rounded-md">
+                            {evt.media_urls.map((url, idx) => (
+                              <div key={idx} className={`aspect-video shrink-0 snap-center relative bg-[#faf8f6] rounded-md overflow-hidden flex items-center justify-center group ${evt.media_urls!.length > 1 ? 'w-[85%]' : 'w-full'}`}>
+                                {url.match(/\.(mp4|webm|ogg|mov)$/i) ? (
+                                  <>
+                                    <video 
+                                      src={url} 
+                                      autoPlay 
+                                      muted 
+                                      loop 
+                                      playsInline 
+                                      className="w-full h-full object-cover cursor-pointer"
+                                      onClick={(e) => {
+                                        const video = e.currentTarget;
+                                        if (video.requestFullscreen) {
+                                          video.requestFullscreen();
+                                        } else if ((video as any).webkitRequestFullscreen) {
+                                          (video as any).webkitRequestFullscreen();
+                                        }
+                                      }}
+                                    />
+                                    <button
+                                      onClick={(e) => {
+                                        const video = e.currentTarget.previousElementSibling as HTMLVideoElement;
+                                        if (video && video.requestFullscreen) {
+                                          video.requestFullscreen();
+                                        } else if (video && (video as any).webkitRequestFullscreen) {
+                                          (video as any).webkitRequestFullscreen();
+                                        }
+                                      }}
+                                      className="absolute bottom-3 right-3 p-2 bg-black/40 hover:bg-black/60 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm shadow-md cursor-pointer pointer-events-auto"
+                                      aria-label="Fullscreen"
+                                    >
+                                      <Maximize className="w-4 h-4" />
+                                    </button>
+                                  </>
+                                ) : (
+                                  <img src={url} alt={`Highlight ${idx + 1}`} className="w-full h-full object-cover" />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        ) : hasHighlights ? (
                           /* Beautiful simulated play reel */
-                          <div className="aspect-video bg-[#eae7e7] rounded-md flex flex-col items-center justify-center relative overflow-hidden group select-none">
+                          <div className="w-full bg-[#eae7e7] rounded-md flex flex-col items-center justify-center relative overflow-hidden group select-none aspect-video">
                             <div className="absolute inset-0 bg-black/10 group-hover:bg-black/15 transition-colors duration-300" />
                             <div className="w-12 h-12 bg-[#690018]/95 hover:bg-[#8b1a2b] rounded-full flex items-center justify-center text-white shadow-md transition-transform duration-300 group-hover:scale-105 z-10">
                               <Play className="w-5 h-5 fill-current ml-0.5" />
@@ -184,7 +242,7 @@ export default function EventModal({ events, selectedDate, onClose }: EventModal
                           </div>
                         ) : (
                           /* Placeholder: Camera icon & label "Moments coming soon" */
-                          <div className="aspect-video bg-[#faf8f6] border border-dashed border-[#debfbf]/40 rounded-md flex flex-col items-center justify-center gap-1.5 text-[#8b7171]/60 p-4 text-center select-none">
+                          <div className="w-full aspect-video bg-[#faf8f6] border border-dashed border-[#debfbf]/40 rounded-md flex flex-col items-center justify-center gap-1.5 text-[#8b7171]/60 p-4 text-center select-none">
                             <Camera className="w-6 h-6 text-[#8b7171]/40" />
                             <span className="font-sans text-[10px] font-semibold uppercase tracking-wider text-[#5e5e5d]">
                               Moments coming soon

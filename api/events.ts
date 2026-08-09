@@ -9,6 +9,7 @@ interface CalendarEventOut {
   location: string;
   eventType: string | null;
   type: 'past' | 'upcoming';
+  media_urls?: string[] | null;
 }
 
 async function fetchCalendarEvents(): Promise<CalendarEventOut[]> {
@@ -23,7 +24,7 @@ async function fetchCalendarEvents(): Promise<CalendarEventOut[]> {
   });
   const { data, error } = await supabase
     .from('calendar_events')
-    .select('id, date, title, location, event_type, type')
+    .select('id, date, title, location, event_type, type, media_urls')
     .not('gcal_event_id', 'is', null)
     .order('date', { ascending: true });
 
@@ -36,6 +37,7 @@ async function fetchCalendarEvents(): Promise<CalendarEventOut[]> {
     location: row.location ?? '',
     eventType: row.event_type,
     type: row.type,
+    media_urls: row.media_urls,
   }));
 }
 

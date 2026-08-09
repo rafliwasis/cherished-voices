@@ -25,9 +25,11 @@ export interface CalendarEvent {
   date: string; // YYYY-MM-DD
   title: string;
   location: string;
+  eventType?: string;
   type: 'past' | 'upcoming';
   highlightsCount?: number;
   recordings?: GuestbookRecording[];
+  media_urls?: string[];
 }
 
 export interface Testimonial {
