@@ -32,7 +32,7 @@ export default function AboutUs() {
               What is Cherished Voices?
             </h2>
             <p className="font-[family-name:--font-body] text-lg md:text-xl text-[#574141] leading-relaxed">
-              People who holds a special place in our heart must have their personal thoughts about us. That is where Cherished Voices came in, to make sure all the feelings are expressed through voices, so it can be cherished forever
+              People who holds a special place in our heart must have their personal thoughts about us. That is where Cherished Voices came in, to make sure all the feelings are expressed with voices, so it can be cherished forever
             </p>
           </div>
 

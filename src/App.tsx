@@ -54,7 +54,7 @@ export default function App() {
 
         <AboutUs />
 
-        <Moments />
+        <Testimonials />
 
         <CalendarSection 
           onOpenEventModal={handleOpenEventModal}
@@ -63,7 +63,7 @@ export default function App() {
           onScrollToContact={() => scrollToSection('contact')}
         />
 
-        <Testimonials />
+        <Moments />
 
         <ContactUs 
           selectedDate={selectedDateForInquiry}

@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { getHeroVideoUrl } from '../lib/cms';
 
 interface HeroProps {
@@ -8,31 +7,22 @@ interface HeroProps {
 
 export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
   const heroVideo = getHeroVideoUrl();
-  const [loadVideo, setLoadVideo] = useState(false);
-
-  useEffect(() => {
-    // Delay video loading slightly to ensure FCP and LCP are triggered by text first
-    const timer = setTimeout(() => setLoadVideo(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-[#1C1B1B]">
       {/* Background Video with Dark Hero Gradient overlay */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
-        {loadVideo && (
-          <video
-            key={heroVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-            className="w-full h-full object-cover scale-105 transition-transform duration-[10s] ease-out animate-[fadeIn_1s_ease-out]"
-          >
-            <source src={heroVideo} type="video/mp4" />
-          </video>
-        )}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+          className="w-full h-full object-cover scale-105 transition-transform duration-[10s] ease-out animate-[fadeIn_1s_ease-out]"
+        >
+          <source src={heroVideo} type="video/mp4" />
+        </video>
         {/* Soft, cinematic darkening gradient */}
         <div className="absolute inset-0 hero-gradient bg-black/40" />
       </div>
