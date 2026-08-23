@@ -61,17 +61,17 @@ export default function Navbar() {
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all duration-300 group-hover:w-full"></span>
             </button>
             <button
-              onClick={() => scrollToSection('moments')}
-              className="font-sans text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 hover:opacity-70 relative group cursor-pointer"
-            >
-              Moments
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all duration-300 group-hover:w-full"></span>
-            </button>
-            <button
               onClick={() => scrollToSection('calendar')}
               className="font-sans text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 hover:opacity-70 relative group cursor-pointer"
             >
               Calendar
+              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all duration-300 group-hover:w-full"></span>
+            </button>
+            <button
+              onClick={() => scrollToSection('moments')}
+              className="font-sans text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 hover:opacity-70 relative group cursor-pointer"
+            >
+              Moments
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all duration-300 group-hover:w-full"></span>
             </button>
             <button
@@ -123,16 +123,16 @@ export default function Navbar() {
             About Us
           </button>
           <button
-            onClick={() => scrollToSection('moments')}
-            className="text-left py-2 hover:text-[#912A55] border-b border-[#E5DAE3]/40"
-          >
-            Moments
-          </button>
-          <button
             onClick={() => scrollToSection('calendar')}
             className="text-left py-2 hover:text-[#912A55] border-b border-[#E5DAE3]/40"
           >
             Calendar
+          </button>
+          <button
+            onClick={() => scrollToSection('moments')}
+            className="text-left py-2 hover:text-[#912A55] border-b border-[#E5DAE3]/40"
+          >
+            Moments
           </button>
           <button
             onClick={() => scrollToSection('contact')}

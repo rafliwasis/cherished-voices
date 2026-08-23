@@ -2,8 +2,7 @@ import { useRef, useState, useCallback } from 'react';
 import { X, MapPin, Camera, Play, Sparkles, ChevronLeft, ChevronRight, Maximize } from 'lucide-react';
 import { CalendarEvent } from '../types';
 
-const WHATSAPP_NUMBER = '6287703149549';
-const WHATSAPP_MESSAGE = 'Hi Cherished Voices, I would like to inquire about booking for';
+const WHATSAPP_URL = 'https://api.whatsapp.com/send/?phone=6285196548001&text=Hi%20Cherished%20Voices%2C%20I%20want%20to%20know%20more%20about%20your%20service%21';
 
 interface EventModalProps {
   events: CalendarEvent[] | null;
@@ -97,7 +96,7 @@ export default function EventModal({ events, selectedDate, onClose }: EventModal
                 </div>
 
                 <a
-                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`${WHATSAPP_MESSAGE} ${formatDateString(dateStr)}`)}`}
+                  href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#912A55] text-white hover:bg-[#B05480] font-sans text-xs font-semibold uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] rounded-full cursor-pointer"
@@ -290,7 +289,7 @@ export default function EventModal({ events, selectedDate, onClose }: EventModal
 
               {shouldShowWhatsAppCTA && (
                 <a
-                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`${WHATSAPP_MESSAGE} ${formatDateString(dateStr)}`)}`}
+                  href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#912A55] text-white hover:bg-[#B05480] font-sans text-xs font-semibold uppercase tracking-widest transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] rounded-full cursor-pointer"

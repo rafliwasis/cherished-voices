@@ -38,7 +38,7 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://wa.me/6287703149549"
+                href="https://api.whatsapp.com/send/?phone=6285196548001&text=Hi%20Cherished%20Voices%2C%20I%20want%20to%20know%20more%20about%20your%20service%21"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-1.5 bg-[#912A55]/30 hover:bg-[#912A55] text-white/80 hover:text-white transition-all rounded-full"
