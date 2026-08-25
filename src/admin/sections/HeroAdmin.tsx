@@ -2,8 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { heroVideoExists, getHeroVideoUrl, uploadHeroVideo } from '../../lib/cms';
 import { Check, RefreshCw, Upload, Video as VideoIcon } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
+import { FFmpeg } from '@ffmpeg/ffmpeg';
+import { compressVideoFile } from '../../lib/videoCompression';
 
-function VideoUploader({ uploading, onSelect }: { uploading: boolean; onSelect: (file: File) => void }) {
+function VideoUploader({ uploading, compressing, progress, onSelect }: { uploading: boolean; compressing?: boolean; progress?: number; onSelect: (file: File) => void }) {
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -39,10 +41,15 @@ function VideoUploader({ uploading, onSelect }: { uploading: boolean; onSelect: 
           className="hidden"
           onChange={(e) => { pickFile(e.target.files?.[0]); e.target.value = ''; }}
         />
-        {uploading ? (
+        {compressing ? (
+          <div className="flex flex-col items-center gap-2 py-1">
+            <div className="w-5 h-5 border-2 border-[#912A55]/20 border-t-[#912A55] rounded-full animate-spin" />
+            <span className="font-sans text-xs text-[#5e5e5d]">Compressing video... {progress}%</span>
+          </div>
+        ) : uploading ? (
           <div className="flex items-center gap-2 py-1">
             <div className="w-5 h-5 border-2 border-[#912A55]/20 border-t-[#912A55] rounded-full animate-spin" />
-            <span className="font-sans text-xs text-[#5e5e5d]">Uploading video…</span>
+            <span className="font-sans text-xs text-[#5e5e5d]">Uploading to server…</span>
           </div>
         ) : (
           <>
@@ -64,9 +71,12 @@ export default function HeroAdmin() {
   const [hasVideo, setHasVideo] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [compressing, setCompressing] = useState(false);
+  const [compressProgress, setCompressProgress] = useState(0);
   const [uploaded, setUploaded] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const ffmpegRef = useRef(new FFmpeg());
 
   const fetchCurrent = async () => {
     setLoading(true);
@@ -83,12 +93,35 @@ export default function HeroAdmin() {
     setConfirmOpen(true);
   };
 
+  const compressVideo = async (videoFile: File): Promise<File> => {
+    setCompressing(true);
+    setCompressProgress(0);
+    try {
+      return await compressVideoFile(videoFile, ffmpegRef, setCompressProgress);
+    } catch (error) {
+      console.error('Compression failed:', error);
+      throw error;
+    } finally {
+      setCompressing(false);
+      setCompressProgress(0);
+    }
+  };
+
   const handleConfirmUpload = async () => {
     if (!pendingFile) return;
     setConfirmOpen(false);
+    
+    let fileToUpload = pendingFile;
+    
+    try {
+      fileToUpload = await compressVideo(pendingFile);
+    } catch (err) {
+      console.error('Failed to compress, uploading original file', err);
+    }
+
     setUploading(true);
     try {
-      await uploadHeroVideo(pendingFile);
+      await uploadHeroVideo(fileToUpload);
       setHasVideo(true);
       setVideoUrl(getHeroVideoUrl());
       setUploaded(true);
@@ -151,7 +184,7 @@ export default function HeroAdmin() {
           <p className="font-sans text-[10px] text-[#5e5e5d]/60 -mt-2">
             Pilih video baru — akan muncul konfirmasi sebelum mengganti yang sekarang.
           </p>
-          <VideoUploader uploading={uploading} onSelect={handleSelect} />
+          <VideoUploader uploading={uploading} compressing={compressing} progress={compressProgress} onSelect={handleSelect} />
           {uploaded && (
             <p className="flex items-center gap-1.5 font-sans text-xs text-emerald-600">
               <Check className="w-3.5 h-3.5" /> Video uploaded — live on the public site.

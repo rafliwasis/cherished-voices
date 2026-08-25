@@ -13,16 +13,15 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
       {/* Background Video with Dark Hero Gradient overlay */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
         <video
+          src={heroVideo}
           autoPlay
           loop
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
           className="w-full h-full object-cover scale-105 transition-transform duration-[10s] ease-out animate-[fadeIn_1s_ease-out]"
-        >
-          <source src={heroVideo} type="video/mp4" />
-        </video>
+        />
         {/* Soft, cinematic darkening gradient */}
         <div className="absolute inset-0 hero-gradient bg-black/40" />
       </div>
