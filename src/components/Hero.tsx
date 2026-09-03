@@ -40,12 +40,14 @@ export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
 
         {/* Call to Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
-          <button
-            onClick={onCheckAvailability}
-            className="w-full sm:w-auto px-10 py-4 md:py-5 bg-[#912A55] hover:bg-[#B05480] text-white font-sans text-xs font-medium uppercase tracking-[0.15em] transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer rounded-full"
+          <a
+            href="https://drive.google.com/drive/folders/19PmXpZdBZn-mEkkl9yLQdd_TdEHGSNng"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block text-center w-full sm:w-auto px-10 py-4 md:py-5 bg-[#912A55] hover:bg-[#B05480] text-white font-sans text-xs font-medium uppercase tracking-[0.15em] transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer rounded-full"
           >
-            Check Availability
-          </button>
+            See Pricelist
+          </a>
           <button
             onClick={onContactUs}
             className="w-full sm:w-auto px-10 py-4 md:py-5 border border-white/70 bg-white/10 hover:bg-white/20 text-white font-sans text-xs font-medium uppercase tracking-[0.15em] transition-all duration-300 active:scale-[0.98] cursor-pointer rounded-full"
