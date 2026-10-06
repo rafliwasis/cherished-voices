@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 // Served by Vercel from /public/media (not Supabase). To change them, replace the files
 // and use a new filename (e.g. hero-v2.mp4) since /media/* is cached for a year.
-const HERO_VIDEO = '/media/hero.mp4';
-const HERO_POSTER = '/media/hero-poster.webp';
+const HERO_VIDEO = '/media/hero-v2.mp4';
+const HERO_POSTER = '/media/hero-poster-v2.webp';
 
 // Skip the video for visitors who asked for reduced motion or are on Data Saver.
 function canPlayHeroVideo() {
