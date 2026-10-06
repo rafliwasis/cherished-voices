@@ -27,9 +27,13 @@ export async function compressVideoFile(
   
   await ffmpeg.exec([
     '-i', inputName,
+    // Cap width at 1280px (never upscale); these videos are muted background loops.
+    '-vf', 'scale=min(1280\\,iw):-2',
     '-c:v', 'libx264',
     '-preset', 'veryfast',
-    '-crf', '28',
+    '-crf', '30',
+    '-pix_fmt', 'yuv420p',
+    '-an',
     '-movflags', '+faststart',
     outputName
   ]);

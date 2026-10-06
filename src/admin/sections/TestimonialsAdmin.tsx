@@ -189,7 +189,6 @@ export default function TestimonialsAdmin() {
                         )}
                         <ImageUploader
                           bucket="testimonial-photos"
-                          currentUrl={currentPhoto}
                           onUploaded={setEditPhotoUrl}
                         />
                       </div>

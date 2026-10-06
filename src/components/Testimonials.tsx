@@ -17,6 +17,8 @@ function TestimonialCard({ quote, name, photoUrl }: { quote: string; name: strin
             <img
               src={photoUrl}
               alt={name}
+              loading="lazy"
+              decoding="async"
               className="w-11 h-11 md:w-12 md:h-12 rounded-full flex-shrink-0 object-cover border border-[#D9BDD0]/30"
             />
           )}

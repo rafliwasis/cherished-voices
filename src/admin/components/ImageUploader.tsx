@@ -5,11 +5,9 @@ import imageCompression from 'browser-image-compression';
 
 export default function ImageUploader({
   bucket,
-  currentUrl,
   onUploaded,
 }: {
   bucket: string;
-  currentUrl: string;
   onUploaded: (url: string) => void;
 }) {
   const [dragging, setDragging] = useState(false);

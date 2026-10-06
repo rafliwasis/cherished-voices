@@ -5,29 +5,8 @@ export interface MomentRow extends MomentItem {
   sortOrder: number;
 }
 
-export const HERO_VIDEO_PATH = 'videos/hero-video.mp4';
-
-export function getHeroVideoUrl(): string {
-  return supabasePublic.storage.from('hero-media').getPublicUrl(HERO_VIDEO_PATH).data.publicUrl;
-}
-
-export async function uploadHeroVideo(file: File): Promise<string> {
-  const { error } = await supabase.storage
-    .from('hero-media')
-    .upload(HERO_VIDEO_PATH, file, {
-      upsert: true,
-      contentType: file.type,
-      cacheControl: 'no-cache',
-    });
-  if (error) throw error;
-  return getHeroVideoUrl();
-}
-
-export async function heroVideoExists(): Promise<boolean> {
-  const { data, error } = await supabase.storage.from('hero-media').list('videos');
-  if (error || !data) return false;
-  return data.length > 0;
-}
+// Uploads get a unique path (upsert: false), so they can be cached for a year.
+const IMMUTABLE_CACHE_SECONDS = '31536000';
 
 export async function getMoments(): Promise<MomentRow[]> {
   const { data, error } = await supabasePublic
@@ -75,7 +54,10 @@ export async function deleteMoment(id: string): Promise<void> {
 }
 
 export async function uploadMedia(bucket: string, path: string, file: File): Promise<string> {
-  const { error } = await supabase.storage.from(bucket).upload(path, file, { upsert: false });
+  const { error } = await supabase.storage.from(bucket).upload(path, file, {
+    upsert: false,
+    cacheControl: IMMUTABLE_CACHE_SECONDS,
+  });
   if (error) throw error;
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   return data.publicUrl;
@@ -120,28 +102,4 @@ export async function saveTestimonial(testimonial: {
 export async function deleteTestimonial(id: string): Promise<void> {
   const { error } = await supabase.from('testimonials').delete().eq('id', id);
   if (error) throw error;
-}
-
-export const ABOUT_VIDEO_PATH = 'videos/about-video.mp4';
-
-export function getAboutVideoUrl(): string {
-  return supabasePublic.storage.from('about-media').getPublicUrl(ABOUT_VIDEO_PATH).data.publicUrl;
-}
-
-export async function uploadAboutVideo(file: File): Promise<string> {
-  const { error } = await supabase.storage
-    .from('about-media')
-    .upload(ABOUT_VIDEO_PATH, file, {
-      upsert: true,
-      contentType: file.type,
-      cacheControl: 'no-cache',
-    });
-  if (error) throw error;
-  return getAboutVideoUrl();
-}
-
-export async function aboutVideoExists(): Promise<boolean> {
-  const { data, error } = await supabase.storage.from('about-media').list('videos');
-  if (error || !data) return false;
-  return data.length > 0;
 }
