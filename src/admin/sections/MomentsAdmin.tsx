@@ -290,7 +290,6 @@ export default function MomentsAdmin() {
                     {isEditing && (
                       <ImageUploader
                         bucket="moments"
-                        currentUrl={editImageUrl}
                         onUploaded={setEditImageUrl}
                       />
                     )}

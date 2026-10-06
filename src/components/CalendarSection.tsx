@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 import { CalendarEvent } from '../types';
+import { supabasePublic } from '../lib/supabase';
 
 interface CalendarSectionProps {
   onOpenEventModal: (event: CalendarEvent, allDayEvents: CalendarEvent[]) => void;
-  selectedDateForInquiry: string;
-  setSelectedDateForInquiry: (date: string) => void;
-  onScrollToContact: () => void;
 }
 
 const MONTHS = [
@@ -19,31 +17,30 @@ const getTodayString = () => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 
-export default function CalendarSection({ 
-  onOpenEventModal, 
-  setSelectedDateForInquiry,
-  onScrollToContact 
-}: CalendarSectionProps) {
+export default function CalendarSection({ onOpenEventModal }: CalendarSectionProps) {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
 
   useEffect(() => {
-    fetch('/api/events')
-      .then((res) => res.json())
-      .then((data: Array<{ id: string; date: string; title: string; location: string; type: CalendarEvent['type']; media_urls?: string[] }>) => {
+    supabasePublic
+      .from('calendar_events')
+      .select('id, date, title, location, type, media_urls')
+      .order('date', { ascending: true })
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('Failed to load calendar events', error);
+          return;
+        }
         setEvents(
-          data.map((row) => ({
+          (data ?? []).map((row) => ({
             id: row.id,
             date: row.date,
             title: row.title,
-            location: row.location,
+            location: row.location ?? '',
             type: row.type,
-            media_urls: row.media_urls,
+            media_urls: row.media_urls ?? undefined,
           }))
         );
-      })
-      .catch((err) => {
-        console.error('Failed to load calendar events', err);
       });
   }, []);
 

@@ -1,8 +1,10 @@
-import { getAboutVideoUrl } from '../lib/cms';
+import LazyVideo from './LazyVideo';
+
+// Served by Vercel from /public/media (not Supabase). To change it, replace the file
+// and use a new filename (e.g. about-v2.mp4) since /media/* is cached for a year.
+const ABOUT_VIDEO = '/media/about.mp4';
 
 export default function AboutUs() {
-  const aboutVideoUrl = getAboutVideoUrl();
-
   return (
     <section className="py-24 md:py-32 bg-[#FAF8F6]" id="about-us">
       <div className="px-6 md:px-16 max-w-[1200px] mx-auto">
@@ -12,9 +14,9 @@ export default function AboutUs() {
           <div className="md:col-span-5">
             <div className="relative aspect-[4/3] bg-[#303232] rounded-lg shadow-md border border-[#8b1a2b]/20 overflow-hidden">
               <div className="wedding-tone-overlay rounded-lg" />
-              <video
+              <LazyVideo
                 className="w-full h-full object-cover wedding-tone"
-                src={aboutVideoUrl}
+                src={ABOUT_VIDEO}
                 autoPlay
                 muted
                 loop

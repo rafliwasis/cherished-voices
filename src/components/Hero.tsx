@@ -1,25 +1,48 @@
-import { getHeroVideoUrl } from '../lib/cms';
+import { useEffect, useState } from 'react';
+
+// Served by Vercel from /public/media (not Supabase). To change them, replace the files
+// and use a new filename (e.g. hero-v2.mp4) since /media/* is cached for a year.
+const HERO_VIDEO = '/media/hero.mp4';
+const HERO_POSTER = '/media/hero-poster.webp';
+
+// Skip the video for visitors who asked for reduced motion or are on Data Saver.
+function canPlayHeroVideo() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+  const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  return !connection?.saveData;
+}
 
 interface HeroProps {
-  onCheckAvailability: () => void;
   onContactUs: () => void;
 }
 
-export default function Hero({ onCheckAvailability, onContactUs }: HeroProps) {
-  const heroVideo = getHeroVideoUrl();
+export default function Hero({ onContactUs }: HeroProps) {
+  const [loadVideo, setLoadVideo] = useState(false);
+
+  // Show the poster immediately and only fetch the video once the page has finished loading.
+  useEffect(() => {
+    if (!canPlayHeroVideo()) return;
+    const start = () => setLoadVideo(true);
+    if (document.readyState === 'complete') {
+      start();
+      return;
+    }
+    window.addEventListener('load', start, { once: true });
+    return () => window.removeEventListener('load', start);
+  }, []);
 
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-[#1C1B1B]">
       {/* Background Video with Dark Hero Gradient overlay */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
         <video
-          src={heroVideo}
+          src={loadVideo ? HERO_VIDEO : undefined}
           autoPlay
           loop
           muted
           playsInline
-          preload="metadata"
-          poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+          preload="none"
+          poster={HERO_POSTER}
           className="w-full h-full object-cover scale-105 transition-transform duration-[10s] ease-out animate-[fadeIn_1s_ease-out]"
         />
         {/* Soft, cinematic darkening gradient */}

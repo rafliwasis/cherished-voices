@@ -1,8 +1,11 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { supabase } from "../../lib/supabase";
 import { CalendarEvent } from "../../types";
 import { RefreshCw, MapPin, Search, Filter, ArrowUpDown, Upload, X } from "lucide-react";
 import imageCompression from 'browser-image-compression';
+import { FFmpeg } from '@ffmpeg/ffmpeg';
+import { compressVideoFile } from '../../lib/videoCompression';
+import { extractVideoPoster, getVideoPosterUrl } from '../../lib/videoPoster';
 
 export default function EventsAdmin() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -17,6 +20,8 @@ export default function EventsAdmin() {
   const [endDate, setEndDate] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
   const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [compressProgress, setCompressProgress] = useState<number | null>(null);
+  const ffmpegRef = useRef(new FFmpeg());
   const [mediaModalEventId, setMediaModalEventId] = useState<string | null>(null);
 
   const fetchEvents = async () => {
@@ -64,7 +69,7 @@ export default function EventsAdmin() {
 
       for (let i = 0; i < files.length; i++) {
         let file = files[i];
-        const fileExt = file.name.split('.').pop() || '';
+        let fileExt = file.name.split('.').pop() || '';
 
         // Prevent multiple videos
         if (fileExt.match(/(mp4|webm|ogg|mov)/i)) {
@@ -82,6 +87,17 @@ export default function EventsAdmin() {
           } catch (error) {
             console.warn("Compression failed", error);
           }
+        } else if (file.type.startsWith('video/')) {
+          // Videos are the biggest source of Supabase egress, so shrink them before upload.
+          try {
+            setCompressProgress(0);
+            file = await compressVideoFile(file, ffmpegRef, setCompressProgress);
+            fileExt = 'mp4';
+          } catch (error) {
+            console.warn("Video compression failed, uploading original", error);
+          } finally {
+            setCompressProgress(null);
+          }
         }
 
         const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
@@ -89,7 +105,7 @@ export default function EventsAdmin() {
 
         const { error: uploadError } = await supabase.storage
           .from("events")
-          .upload(filePath, file);
+          .upload(filePath, file, { cacheControl: "31536000" });
 
         if (uploadError) throw uploadError;
 
@@ -98,6 +114,20 @@ export default function EventsAdmin() {
           .getPublicUrl(filePath);
 
         newUrls.push(publicUrlData.publicUrl);
+
+        if (file.type.startsWith('video/')) {
+          // Poster lets the public site show a still frame instead of downloading the video.
+          try {
+            const poster = await extractVideoPoster(file);
+            const posterPath = getVideoPosterUrl(filePath);
+            const { error: posterError } = await supabase.storage
+              .from("events")
+              .upload(posterPath, poster, { cacheControl: "31536000", contentType: "image/jpeg" });
+            if (posterError) console.warn("Poster upload failed", posterError);
+          } catch (posterErr) {
+            console.warn("Could not create video poster", posterErr);
+          }
+        }
       }
 
       const updatedMedia = [...currentMedia, ...newUrls];
@@ -127,9 +157,11 @@ export default function EventsAdmin() {
       const urlParts = mediaUrl.split("/events/");
       if (urlParts.length > 1) {
         const filePath = urlParts[1];
+        const toRemove = [filePath];
+        if (mediaUrl.match(/\.(mp4|webm|ogg|mov)$/i)) toRemove.push(getVideoPosterUrl(filePath));
         const { error: removeError } = await supabase.storage
           .from("events")
-          .remove([filePath]);
+          .remove(toRemove);
         if (removeError) console.error("Error removing from storage:", removeError);
       }
 
@@ -474,7 +506,7 @@ export default function EventsAdmin() {
                         <Upload className="w-4 h-4" />
                       )}
                       <span className="font-sans text-xs uppercase font-bold tracking-wider">
-                        Upload Files
+                        {compressProgress !== null ? `Compressing video ${compressProgress}%` : 'Upload Files'}
                       </span>
                       <input
                         type="file"
@@ -492,9 +524,9 @@ export default function EventsAdmin() {
                       {currentEvent.media_urls.map((url, idx) => (
                         <div key={idx} className="relative group rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm flex items-center justify-center">
                           {url.match(/\.(mp4|webm|ogg|mov)$/i) ? (
-                            <video src={url} controls className="w-full h-auto" />
+                            <video src={url} controls preload="metadata" className="w-full h-auto" />
                           ) : (
-                            <img src={url} alt="" className="w-full h-auto" />
+                            <img src={url} alt="" loading="lazy" decoding="async" className="w-full h-auto" />
                           )}
                           <button
                             onClick={() => handleDeleteMedia(currentEvent.id, url, currentEvent.media_urls!)}

@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback } from 'react';
 import { X, MapPin, Camera, Play, Sparkles, ChevronLeft, ChevronRight, Maximize } from 'lucide-react';
 import { CalendarEvent } from '../types';
+import EventVideo from './EventVideo';
 
 const WHATSAPP_URL = 'https://api.whatsapp.com/send/?phone=6285196548001&text=Hi%20Cherished%20Voices%2C%20I%20want%20to%20know%20more%20about%20your%20service%21';
 
@@ -8,7 +9,6 @@ interface EventModalProps {
   events: CalendarEvent[] | null;
   selectedDate: string;
   onClose: () => void;
-  onSelectInquiryDate: (dateString: string) => void;
 }
 
 export default function EventModal({ events, selectedDate, onClose }: EventModalProps) {
@@ -194,25 +194,10 @@ export default function EventModal({ events, selectedDate, onClose }: EventModal
                               <div key={idx} className={`aspect-video shrink-0 snap-center relative bg-[#faf8f6] rounded-md overflow-hidden flex items-center justify-center group ${evt.media_urls!.length > 1 ? 'w-[85%]' : 'w-full'}`}>
                                 {url.match(/\.(mp4|webm|ogg|mov)$/i) ? (
                                   <>
-                                    <video 
-                                      src={url} 
-                                      autoPlay 
-                                      muted 
-                                      loop 
-                                      playsInline 
-                                      className="w-full h-full object-cover cursor-pointer"
-                                      onClick={(e) => {
-                                        const video = e.currentTarget;
-                                        if (video.requestFullscreen) {
-                                          video.requestFullscreen();
-                                        } else if ((video as any).webkitRequestFullscreen) {
-                                          (video as any).webkitRequestFullscreen();
-                                        }
-                                      }}
-                                    />
+                                    <EventVideo src={url} />
                                     <button
                                       onClick={(e) => {
-                                        const video = e.currentTarget.previousElementSibling as HTMLVideoElement;
+                                        const video = e.currentTarget.parentElement?.querySelector('video');
                                         if (video && video.requestFullscreen) {
                                           video.requestFullscreen();
                                         } else if (video && (video as any).webkitRequestFullscreen) {
@@ -226,7 +211,7 @@ export default function EventModal({ events, selectedDate, onClose }: EventModal
                                     </button>
                                   </>
                                 ) : (
-                                  <img src={url} alt={`Highlight ${idx + 1}`} className="w-full h-full object-cover" />
+                                  <img src={url} alt={`Highlight ${idx + 1}`} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                                 )}
                               </div>
                             ))}
