@@ -4,7 +4,7 @@ import MomentsAdmin from './sections/MomentsAdmin';
 import TestimonialsAdmin from './sections/TestimonialsAdmin';
 import EventsAdmin from './sections/EventsAdmin';
 import { supabase } from '../lib/supabase';
-import { Image, LogOut, ExternalLink, Menu, X, MessageSquare, CalendarDays } from 'lucide-react';
+import { Image, LogOut, ExternalLink, Menu, MessageSquare, CalendarDays } from 'lucide-react';
 
 const NAV_ITEMS = [
   { to: '/admin/moments', label: 'Moments', icon: Image, end: false },
@@ -164,13 +164,15 @@ const NAV_ITEMS = [
             <Menu className="w-5 h-5" />
           </button>
           <h1 className="font-serif text-lg font-light italic text-[#1C1B1B]">Cherished Voices</h1>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="p-2 text-transparent"
-            aria-hidden
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 text-[#5e5e5d] hover:text-[#912A55] transition-colors"
+            aria-label="View public site"
           >
-            <X className="w-5 h-5" />
-          </button>
+            <ExternalLink className="w-5 h-5" />
+          </a>
         </header>
 
         {/* Page Content */}
