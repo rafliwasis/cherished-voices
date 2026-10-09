@@ -112,8 +112,12 @@ export default function Moments() {
           <div className="w-12 h-[1px] bg-[#912A55] mx-auto mt-6" />
         </div>
 
-        {/* Horizontal Scroll Strip */}
-        <div ref={scrollStripRef} className="flex overflow-x-auto gap-6 pb-4 snap-x snap-mandatory scrollbar-hide">
+        {/* Horizontal Scroll Strip. Auto margins on the first/last card center the row when it fits
+            and collapse to 0 when it overflows (justify-center would clip the left edge instead). */}
+        <div
+          ref={scrollStripRef}
+          className="flex overflow-x-auto gap-6 pb-4 snap-x snap-mandatory scrollbar-hide [&>:first-child]:ml-auto [&>:last-child]:mr-auto"
+        >
           {items.map((item, idx) => {
             const aspectClass = getAspectClass(item.aspect);
 

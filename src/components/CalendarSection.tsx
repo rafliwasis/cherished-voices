@@ -188,22 +188,21 @@ export default function CalendarSection({ onOpenEventModal }: CalendarSectionPro
                     </div>
                   )}
 
-                  {hasEvents && bottomN > 0 && (
+                  {/* Bottom hearts and the "+N" label stack in one column so they never overlap */}
+                  {hasEvents && (bottomN > 0 || overflowCount > 0) && (
                     <div
-                      className="absolute left-1/2 flex justify-center leading-none"
+                      className="absolute left-1/2 flex flex-col items-center gap-0.5 leading-none"
                       style={{ top: `calc(50% + ${hOffset}px)`, transform: 'translateX(-50%)' }}
                     >
-                      {bottomN === 1 ? h(topN) : <span className="flex gap-px">{h(topN)}{h(topN + 1)}</span>}
+                      {bottomN > 0 && (
+                        bottomN === 1 ? h(topN) : <span className="flex gap-px">{h(topN)}{h(topN + 1)}</span>
+                      )}
+                      {overflowCount > 0 && (
+                        <span className="font-sans text-[10px] md:text-xs font-semibold text-[#912A55] leading-none">
+                          +{overflowCount}
+                        </span>
+                      )}
                     </div>
-                  )}
-
-                  {hasEvents && overflowCount > 0 && (
-                    <span
-                      className="absolute left-1/2 font-sans font-semibold text-[#912A55] leading-none"
-                      style={{ top: 'calc(50% + 22px)', transform: 'translateX(-50%)' }}
-                    >
-                      +{overflowCount}
-                    </span>
                   )}
 
                   {hasEvents && (
