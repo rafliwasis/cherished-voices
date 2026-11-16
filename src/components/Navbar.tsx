@@ -37,7 +37,8 @@ export default function Navbar() {
         <div className="flex justify-between items-center px-6 md:px-16 max-w-[1200px] mx-auto">
           {/* Brand Identity */}
           <a
-            href="#"
+            href="/"
+            aria-label="Cherished Voices home"
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -45,42 +46,56 @@ export default function Navbar() {
             className="block leading-none"
           >
             <img
-              src={isScrolled ? '/logo/cherished-logo-og.png' : '/logo/cherished-voices-white.png'}
+              src={isScrolled ? '/logo/cherished-logo-og.webp' : '/logo/cherished-voices-white.webp'}
               alt="Cherished Voices"
+              width={358}
+              height={132}
               className="h-9 md:h-11 w-auto transition-all duration-300"
             />
           </a>
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center gap-10">
-            <button
-              onClick={() => scrollToSection('about-us')}
+            <a
+              href="#about-us"
+              onClick={(e) => { e.preventDefault(); scrollToSection('about-us'); }}
               className="font-sans text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 hover:opacity-70 relative group cursor-pointer"
             >
               About Us
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all duration-300 group-hover:w-full"></span>
-            </button>
-            <button
-              onClick={() => scrollToSection('calendar')}
+            </a>
+            <a
+              href="#calendar"
+              onClick={(e) => { e.preventDefault(); scrollToSection('calendar'); }}
               className="font-sans text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 hover:opacity-70 relative group cursor-pointer"
             >
               Calendar
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all duration-300 group-hover:w-full"></span>
-            </button>
-            <button
-              onClick={() => scrollToSection('moments')}
+            </a>
+            <a
+              href="#moments"
+              onClick={(e) => { e.preventDefault(); scrollToSection('moments'); }}
               className="font-sans text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 hover:opacity-70 relative group cursor-pointer"
             >
               Moments
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all duration-300 group-hover:w-full"></span>
-            </button>
-            <button
-              onClick={() => scrollToSection('contact')}
+            </a>
+            <a
+              href="#faq"
+              onClick={(e) => { e.preventDefault(); scrollToSection('faq'); }}
+              className="font-sans text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 hover:opacity-70 relative group cursor-pointer"
+            >
+              FAQ
+              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a
+              href="#contact"
+              onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
               className="font-sans text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 hover:opacity-70 relative group cursor-pointer"
             >
               Contact Us
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all duration-300 group-hover:w-full"></span>
-            </button>
+            </a>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -110,47 +125,58 @@ export default function Navbar() {
         }`}
       >
         <div className="flex justify-end items-center mb-12">
-          <button onClick={() => setIsMobileMenuOpen(false)} className="p-1">
+          <button onClick={() => setIsMobileMenuOpen(false)} className="p-1" aria-label="Close menu">
             <X className="w-5 h-5 text-[#1C1B1B]" />
           </button>
         </div>
 
         <div className="flex flex-col gap-6 font-serif text-sm tracking-wide">
-          <button
-            onClick={() => scrollToSection('about-us')}
+          <a
+            href="#about-us"
+            onClick={(e) => { e.preventDefault(); scrollToSection('about-us'); }}
             className="text-left py-2 hover:text-[#912A55] border-b border-[#E5DAE3]/40"
           >
             About Us
-          </button>
-          <button
-            onClick={() => scrollToSection('calendar')}
+          </a>
+          <a
+            href="#calendar"
+            onClick={(e) => { e.preventDefault(); scrollToSection('calendar'); }}
             className="text-left py-2 hover:text-[#912A55] border-b border-[#E5DAE3]/40"
           >
             Calendar
-          </button>
-          <button
-            onClick={() => scrollToSection('moments')}
+          </a>
+          <a
+            href="#moments"
+            onClick={(e) => { e.preventDefault(); scrollToSection('moments'); }}
             className="text-left py-2 hover:text-[#912A55] border-b border-[#E5DAE3]/40"
           >
             Moments
-          </button>
-          <button
-            onClick={() => scrollToSection('contact')}
+          </a>
+          <a
+            href="#faq"
+            onClick={(e) => { e.preventDefault(); scrollToSection('faq'); }}
+            className="text-left py-2 hover:text-[#912A55] border-b border-[#E5DAE3]/40"
+          >
+            FAQ
+          </a>
+          <a
+            href="#contact"
+            onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}
             className="text-left py-2 hover:text-[#912A55] border-b border-[#E5DAE3]/40"
           >
             Contact Us
-          </button>
+          </a>
         </div>
 
         {/* Footer info inside drawer */}
         <div className="absolute bottom-8 left-8 right-8 text-[#5e5e5d] text-xs space-y-4">
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-[#912A55]" />
-            <span>087703149549</span>
+            <a href="https://api.whatsapp.com/send/?phone=6285196548001" target="_blank" rel="noopener noreferrer">+62 851-9654-8001</a>
           </div>
           <div className="flex items-center gap-2">
             <Instagram className="w-4 h-4 text-[#912A55]" />
-            <span>@cherishedvoices</span>
+            <a href="https://instagram.com/cherishedvoices" target="_blank" rel="noopener noreferrer">@cherishedvoices</a>
           </div>
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-[#912A55]" />

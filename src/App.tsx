@@ -2,6 +2,8 @@ import { useState, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import AboutUs from './components/AboutUs';
+import Faq from './components/Faq';
+import ClientOnly from './components/ClientOnly';
 import { CalendarEvent } from './types';
 
 // Lazy load components below the fold for better initial load performance
@@ -43,13 +45,22 @@ export default function App() {
 
         <AboutUs />
 
-        <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="w-6 h-6 border-2 border-[#912A55]/20 border-t-[#912A55] rounded-full animate-spin" /></div>}>
+        {/* Live-data sections render in the browser only; the rest is prerendered for SEO. */}
+        <ClientOnly>
           <Testimonials />
+        </ClientOnly>
 
+        <ClientOnly>
           <CalendarSection onOpenEventModal={handleOpenEventModal} />
+        </ClientOnly>
 
+        <ClientOnly>
           <Moments />
+        </ClientOnly>
 
+        <Faq />
+
+        <Suspense fallback={null}>
           <ContactUs />
         </Suspense>
       </main>

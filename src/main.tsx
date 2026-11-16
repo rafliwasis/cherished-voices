@@ -1,23 +1,26 @@
-import { StrictMode, lazy, Suspense } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { StrictMode } from 'react';
+import { createRoot, hydrateRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import './index.css';
-import App from './App.tsx';
+import AppRoutes from './AppRoutes.tsx';
+import { trackOutboundClicks } from './lib/analytics';
 
-// Admin code (and its heavy deps like image/video compression) is only fetched on /admin routes.
-const AdminApp = lazy(() => import('./admin/AdminApp.tsx'));
-const AdminLogin = lazy(() => import('./admin/AdminLogin.tsx'));
-
-createRoot(document.getElementById('root')!).render(
+const container = document.getElementById('root')!;
+const app = (
   <StrictMode>
     <BrowserRouter>
-      <Suspense fallback={null}>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/*" element={<AdminApp />} />
-        </Routes>
-      </Suspense>
+      <AppRoutes />
     </BrowserRouter>
-  </StrictMode>,
+  </StrictMode>
 );
+
+// The homepage is prerendered at build time (see scripts/prerender.mjs), so hydrate it.
+// Admin routes and the dev server get an empty shell and render from scratch.
+// Only "/" is prerendered; anything else that receives that HTML is rendered fresh instead.
+if (container.firstElementChild && window.location.pathname === '/') {
+  hydrateRoot(container, app);
+} else {
+  createRoot(container).render(app);
+}
+
+trackOutboundClicks();

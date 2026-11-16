@@ -6,9 +6,14 @@ import imageCompression from 'browser-image-compression';
 export default function ImageUploader({
   bucket,
   onUploaded,
+  maxSizeMB = 0.8,
+  maxWidthOrHeight = 1920,
 }: {
   bucket: string;
   onUploaded: (url: string) => void;
+  /** Compression target. Lower these for images that are only shown small (e.g. avatars). */
+  maxSizeMB?: number;
+  maxWidthOrHeight?: number;
 }) {
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -27,8 +32,8 @@ export default function ImageUploader({
       let finalFile = file;
       try {
         const options = {
-          maxSizeMB: 0.8,
-          maxWidthOrHeight: 1920,
+          maxSizeMB,
+          maxWidthOrHeight,
           useWebWorker: true,
         };
         finalFile = await imageCompression(file, options);
@@ -48,7 +53,7 @@ export default function ImageUploader({
         setUploading(false);
       }
     },
-    [bucket, onUploaded],
+    [bucket, onUploaded, maxSizeMB, maxWidthOrHeight],
   );
 
   return (

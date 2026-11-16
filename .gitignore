@@ -12,3 +12,4 @@ supabase/.temp
 # contains real client data, must never be committed
 supabase/seed.sql
 supabase/migrations/*seed_calendar_events.sql
+dist-ssr/
