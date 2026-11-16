@@ -32,7 +32,7 @@ export default function Hero({ onContactUs }: HeroProps) {
   }, []);
 
   return (
-    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-[#1C1B1B]">
+    <section id="home" className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-[#1C1B1B]">
       {/* Background Video with Dark Hero Gradient overlay */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
         <video

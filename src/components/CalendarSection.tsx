@@ -127,7 +127,7 @@ export default function CalendarSection({ onOpenEventModal }: CalendarSectionPro
         {/* Refined Grid Box */}
         <div className="max-w-4xl mx-auto border border-[#debfbf]/20 bg-white p-6 md:p-8 rounded-lg shadow-sm">
           {/* Days of the Week Header */}
-          <div className="grid grid-cols-7 text-center border-b border-[#debfbf]/20 pb-4 mb-4 font-sans text-xs font-semibold uppercase tracking-widest text-[#574141]/70">
+          <div className="grid grid-cols-7 text-center border-b border-[#debfbf]/20 pb-4 mb-4 font-sans text-xs font-semibold uppercase tracking-widest text-[#574141]/90">
             <div>Mon</div>
             <div>Tue</div>
             <div>Wed</div>

@@ -190,6 +190,9 @@ export default function TestimonialsAdmin() {
                         <ImageUploader
                           bucket="testimonial-photos"
                           onUploaded={setEditPhotoUrl}
+                          // Avatars render at ~48px, so 256px is plenty even on retina screens.
+                          maxSizeMB={0.1}
+                          maxWidthOrHeight={256}
                         />
                       </div>
                       <div>
